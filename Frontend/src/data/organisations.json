@@ -3,8 +3,7 @@
     "id": 0,
     "name": "Example Organisation 1",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "contactFirstName": "John",
-    "contactLastName": "Doe",
+    "contactName": "John Doe",
     "contactEmail": "johndoe@example.com",
     "contactTel": "+1 555-555-5555",
     "webUrl": null,
@@ -13,14 +12,13 @@
     "linkedInUrl": null,
     "references": null,
     "lookingFor": null,
-    "address": "1600 Amphitheatre Parkway, Mountain View, CA"
+    "address": "Brandenburg Gate, Pariser Platz, 10117 Berlin, Germany"
   },
   {
     "id": 1,
     "name": "Example Organisation 2",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "contactFirstName": "Jane",
-    "contactLastName": "Doe",
+    "contactName": "Jane Doe",
     "contactEmail": "janedoe@example.com",
     "contactTel": "+1 555-555-5555",
     "webUrl": "https://www.example.com",
@@ -29,14 +27,13 @@
     "linkedInUrl": "https://www.linkedin.com/company/example",
     "references": "Reference 1, Reference 2, Reference 3",
     "lookingFor": "Looking for a marketing specialist",
-    "address": "1 Infinite Loop, Cupertino, CA"
+    "address": "Eiffel Tower, Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France"
   },
   {
     "id": 2,
     "name": "Example Organisation 3",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "contactFirstName": "Bob",
-    "contactLastName": "Smith",
+    "contactName": "Bob Smith",
     "contactEmail": "bobsmith@example.com",
     "contactTel": "+1 555-555-5555",
     "webUrl": "https://www.example.com",
@@ -45,14 +42,13 @@
     "linkedInUrl": "https://www.linkedin.com/company/example",
     "references": "Reference 1, Reference 2, Reference 3",
     "lookingFor": "Looking for an experienced project manager",
-    "address": "1600 Pennsylvania Ave NW, Washington, DC"
+    "address": "Colosseum, Piazza del Colosseo, 00184 Rome, Italy"
   },
   {
     "id": 3,
     "name": "Example Organisation 4",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "contactFirstName": "Alice",
-    "contactLastName": "Jones",
+    "contactName": "Alice Jones",
     "contactEmail": "alicejones@example.com",
     "contactTel": "+1 555-555-5555",
     "webUrl": "https://www.example.com",
@@ -61,6 +57,21 @@
     "linkedInUrl": "https://www.linkedin.com/company/example",
     "references": "Reference 1, Reference 2, Reference 3",
     "lookingFor": "Looking for interns for summer 2023",
-    "address": "5th Avenue, New York, NY"
+    "address": "Prague Castle, Hradčany, 119 08 Prague 1, Czech Republic"
+  },
+  {
+    "id": 4,
+    "name": "UR Institute",
+    "description": "Universal Research Institute is non-profit NGO think tank – institute for independent interdisciplinary applied scientific research, production of related projects and advocacy...",
+    "contactName": "Gjino Šutić",
+    "contactEmail": "institute@ur-institute.org",
+    "contactTel": "+385 95 501 90 51",
+    "webUrl": "http://ur-institute.org/",
+    "facebookUrl": null,
+    "instagramUrl": null,
+    "linkedInUrl": null,
+    "references": "Dubrovnik Postmodern, STARTS4Water, Du STEM",
+    "lookingFor": "Professional associate in the administration and production of scientific, technological and artistic projects",
+    "address": "Vodovodna ulica 15, Zagreb"
   }
 ]
