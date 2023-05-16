@@ -1,35 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 import {
-  Drawer,
   useMediaQuery,
   Typography,
   List,
   ListItem,
   ListItemText,
   Link,
+  SwipeableDrawer,
+  Tooltip,
+  IconButton,
+  Button,
+  Box,
 } from "@material-ui/core";
+import {
+  Close as CloseIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from "@material-ui/icons";
 
-function GMap({ google, organisations }) {
+import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+
+import { useEffect, useState } from "react";
+
+function GMap({ google, visibleOrganizations, setOrganizations }) {
   const [orgMarkers, setOrgMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
-  const isMobile = useMediaQuery("(max-width: 480px)");
 
-  function handleClick(clickedMarker) {
-    if (selectedMarker === clickedMarker) {
-      // Clicked marker is already bouncing, stop its animation
-      setSelectedMarker(null);
-      clickedMarker.setAnimation(null);
-    } else {
-      // Stop animation on the previously bouncing marker (if any)
-      if (selectedMarker) {
-        selectedMarker.setAnimation(null);
-      }
-      // Start animation on the clicked marker
-      setSelectedMarker(clickedMarker);
-      clickedMarker.setAnimation(google.maps.Animation.BOUNCE);
-    }
-  }
+  const mqSub600 = useMediaQuery("(max-width: 600px)");
 
   function handleCloseDrawer() {
     selectedMarker.setAnimation(null);
@@ -37,19 +33,20 @@ function GMap({ google, organisations }) {
   }
 
   useEffect(() => {
+    setOrgMarkers([]);
     const geocoder = new google.maps.Geocoder();
 
-    // Geocode each organisation's address with a delay between markers
-    organisations.forEach((organisation, index) => {
+    // Geocode each organization's address with a delay between markers
+    visibleOrganizations.forEach((organization, index) => {
       setTimeout(() => {
         geocoder.geocode(
-          { address: organisation.address },
+          { address: organization.address },
           (results, status) => {
             if (status === "OK") {
               const location = results[0].geometry.location;
 
               const marker = {
-                organisation: organisation,
+                organization: organization,
                 position: { lat: location.lat(), lng: location.lng() },
               };
               setOrgMarkers((prevMarkers) => [...prevMarkers, marker]);
@@ -58,43 +55,89 @@ function GMap({ google, organisations }) {
             }
           }
         );
-      }, index * 250);
+      }, index * 200);
     });
-  }, [google.maps.Geocoder]);
+  }, [google.maps.Geocoder, visibleOrganizations]);
 
   return (
     <>
       <Map
         google={google}
-        zoom={5}
-        style={{ width: "100%", height: "100%" }}
-        initialCenter={{ lat: 45.815399, lng: 15.966568 }}
+        zoom={4}
+        style={{
+          // position: "relative",
+
+          borderRadius: 16,
+
+          marginBottom: 50,
+        }}
+        initialCenter={{ lat: 52.52, lng: 13.4049 }}
       >
         {orgMarkers.map((marker, index) => (
           <Marker
             key={index}
             position={marker.position}
-            title={marker.organisation.name}
-            orgInfo={marker.organisation}
-            onClick={(props, marker) => handleClick(marker)}
+            title={marker.organization.name}
+            orgInfo={marker.organization}
+            onClick={(props, clickedMarker) => {
+              if (selectedMarker === clickedMarker) {
+                // Clicked marker is already bouncing, stop its animation
+                setSelectedMarker(null);
+                clickedMarker.setAnimation(null);
+              } else {
+                // Stop animation on the previously bouncing marker (if any)
+                if (selectedMarker) {
+                  selectedMarker.setAnimation(null);
+                }
+                // Start animation on the clicked marker
+                setSelectedMarker(clickedMarker);
+                clickedMarker.setAnimation(google.maps.Animation.BOUNCE);
+              }
+            }}
             animation={window.google.maps.Animation.DROP}
           />
         ))}
       </Map>
 
       {selectedMarker && (
-        <Drawer
-          anchor={isMobile ? "bottom" : "left"}
+        <SwipeableDrawer
+          anchor={mqSub600 ? "bottom" : "left"}
           open={selectedMarker !== null}
           onClose={handleCloseDrawer}
         >
-          <div style={{ width: 300, maxHeight: 200, padding: 16 }}>
-            <Typography variant="h4">{selectedMarker.orgInfo.name}</Typography>
+          <Box
+            style={{
+              width: 480,
+              maxWidth: "100%",
+              maxHeight: "40vh",
+              padding: "5%",
+            }}
+          >
+            <Box
+              disableGutters
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h4">
+                {selectedMarker.orgInfo.name}
+              </Typography>
+
+              <Tooltip title="Close">
+                <IconButton edge="end" onClick={handleCloseDrawer}>
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
             <List dense>
               <ListItem divider>
                 <ListItemText
                   primary="Description"
                   secondary={selectedMarker.orgInfo.description}
+                  style={{ textAlign: "justify" }}
                 />
               </ListItem>
               <ListItem>
@@ -108,6 +151,8 @@ function GMap({ google, organisations }) {
                   primary="Contact Email"
                   secondary={
                     <Link
+                      underline="none"
+                      color="white"
                       href={`mailto:${selectedMarker.orgInfo.contactEmail}`}
                     >
                       {selectedMarker.orgInfo.contactEmail}
@@ -119,7 +164,11 @@ function GMap({ google, organisations }) {
                 <ListItemText
                   primary="Contact Telephone"
                   secondary={
-                    <Link href={`tel:${selectedMarker.orgInfo.contactTel}`}>
+                    <Link
+                      underline="none"
+                      color="white"
+                      href={`tel:${selectedMarker.orgInfo.contactTel}`}
+                    >
                       {selectedMarker.orgInfo.contactTel}
                     </Link>
                   }
@@ -131,6 +180,7 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="References"
                     secondary={selectedMarker.orgInfo.references}
+                    style={{ textAlign: "justify" }}
                   />
                 </ListItem>
               )}
@@ -139,6 +189,7 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="Looking for"
                     secondary={selectedMarker.orgInfo.lookingFor}
+                    style={{ textAlign: "justify" }}
                   />
                 </ListItem>
               )}
@@ -155,7 +206,13 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="Website"
                     secondary={
-                      <Link href={selectedMarker.orgInfo.webUrl}>
+                      <Link
+                        target="_blank"
+                        underline="none"
+                        color="white"
+                        href={selectedMarker.orgInfo.webUrl}
+                        style={{}}
+                      >
                         {selectedMarker.orgInfo.webUrl}
                       </Link>
                     }
@@ -167,7 +224,12 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="Facebook"
                     secondary={
-                      <Link href={selectedMarker.orgInfo.facebookUrl}>
+                      <Link
+                        target="_blank"
+                        underline="none"
+                        color="white"
+                        href={selectedMarker.orgInfo.facebookUrl}
+                      >
                         {selectedMarker.orgInfo.facebookUrl}
                       </Link>
                     }
@@ -179,7 +241,12 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="Instagram"
                     secondary={
-                      <Link href={selectedMarker.orgInfo.instagramUrl}>
+                      <Link
+                        target="_blank"
+                        underline="none"
+                        color="white"
+                        href={selectedMarker.orgInfo.instagramUrl}
+                      >
                         {selectedMarker.orgInfo.instagramUrl}
                       </Link>
                     }
@@ -191,7 +258,12 @@ function GMap({ google, organisations }) {
                   <ListItemText
                     primary="LinkedIn"
                     secondary={
-                      <Link href={selectedMarker.orgInfo.linkedInUrl}>
+                      <Link
+                        target="_blank"
+                        underline="none"
+                        color="white"
+                        href={selectedMarker.orgInfo.linkedInUrl}
+                      >
                         {selectedMarker.orgInfo.linkedInUrl}
                       </Link>
                     }
@@ -199,8 +271,47 @@ function GMap({ google, organisations }) {
                 </ListItem>
               )}
             </List>
-          </div>
-        </Drawer>
+
+            <Box
+              style={{
+                paddingBlock: "5%",
+
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
+              <Button
+                variant="contained"
+                style={{ width: 100 }}
+                startIcon={<DeleteIcon />}
+                onClick={() => {
+                  setOrganizations((organizations) =>
+                    visibleOrganizations.filter(
+                      (org) => org.id !== selectedMarker.orgInfo.id
+                    )
+                  );
+                  handleCloseDrawer();
+                }}
+              >
+                Delete
+              </Button>
+
+              <Button
+                variant="contained"
+                style={{ width: 100 }}
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  // TODO:
+                  // setOrganization(selectedMarker.orgInfo);
+                  // setOpenFormModal(true);
+                }}
+              >
+                Edit
+              </Button>
+            </Box>
+          </Box>
+        </SwipeableDrawer>
       )}
     </>
   );
