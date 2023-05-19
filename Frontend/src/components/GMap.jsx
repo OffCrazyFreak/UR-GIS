@@ -21,7 +21,13 @@ import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 
 import { useEffect, useState } from "react";
 
-function GMap({ google, visibleOrganizations, setOrganizations }) {
+function GMap({
+  google,
+  userIsLoggedIn,
+  visibleOrganizations,
+  handleEdit,
+  handleDelete,
+}) {
   const [orgMarkers, setOrgMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -65,8 +71,6 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
         google={google}
         zoom={4}
         style={{
-          // position: "relative",
-
           borderRadius: 16,
 
           marginBottom: 50,
@@ -103,6 +107,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
         <SwipeableDrawer
           anchor={mqSub600 ? "bottom" : "left"}
           open={selectedMarker !== null}
+          onOpen={() => {}} // required
           onClose={handleCloseDrawer}
         >
           <Box
@@ -114,7 +119,6 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
             }}
           >
             <Box
-              disableGutters
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -152,7 +156,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                   secondary={
                     <Link
                       underline="none"
-                      color="white"
+                      color="primary"
                       href={`mailto:${selectedMarker.orgInfo.contactEmail}`}
                     >
                       {selectedMarker.orgInfo.contactEmail}
@@ -166,7 +170,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                   secondary={
                     <Link
                       underline="none"
-                      color="white"
+                      color="primary"
                       href={`tel:${selectedMarker.orgInfo.contactTel}`}
                     >
                       {selectedMarker.orgInfo.contactTel}
@@ -209,7 +213,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                       <Link
                         target="_blank"
                         underline="none"
-                        color="white"
+                        color="primary"
                         href={selectedMarker.orgInfo.webUrl}
                         style={{}}
                       >
@@ -227,7 +231,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                       <Link
                         target="_blank"
                         underline="none"
-                        color="white"
+                        color="primary"
                         href={selectedMarker.orgInfo.facebookUrl}
                       >
                         {selectedMarker.orgInfo.facebookUrl}
@@ -244,7 +248,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                       <Link
                         target="_blank"
                         underline="none"
-                        color="white"
+                        color="primary"
                         href={selectedMarker.orgInfo.instagramUrl}
                       >
                         {selectedMarker.orgInfo.instagramUrl}
@@ -261,7 +265,7 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
                       <Link
                         target="_blank"
                         underline="none"
-                        color="white"
+                        color="primary"
                         href={selectedMarker.orgInfo.linkedInUrl}
                       >
                         {selectedMarker.orgInfo.linkedInUrl}
@@ -272,44 +276,41 @@ function GMap({ google, visibleOrganizations, setOrganizations }) {
               )}
             </List>
 
-            <Box
-              style={{
-                paddingBlock: "5%",
+            {userIsLoggedIn && (
+              <Box
+                style={{
+                  paddingBlock: "5%",
 
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 1,
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{ width: 100 }}
-                startIcon={<DeleteIcon />}
-                onClick={() => {
-                  setOrganizations((organizations) =>
-                    visibleOrganizations.filter(
-                      (org) => org.id !== selectedMarker.orgInfo.id
-                    )
-                  );
-                  handleCloseDrawer();
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 1,
                 }}
               >
-                Delete
-              </Button>
+                <Button
+                  variant="contained"
+                  style={{ width: 100 }}
+                  startIcon={<DeleteIcon />}
+                  onClick={() => {
+                    handleCloseDrawer();
+                    handleDelete(selectedMarker.orgInfo);
+                  }}
+                >
+                  Delete
+                </Button>
 
-              <Button
-                variant="contained"
-                style={{ width: 100 }}
-                startIcon={<EditIcon />}
-                onClick={() => {
-                  // TODO:
-                  // setOrganization(selectedMarker.orgInfo);
-                  // setOpenFormModal(true);
-                }}
-              >
-                Edit
-              </Button>
-            </Box>
+                <Button
+                  variant="contained"
+                  style={{ width: 100 }}
+                  startIcon={<EditIcon />}
+                  onClick={() => {
+                    handleCloseDrawer();
+                    handleEdit(selectedMarker.orgInfo);
+                  }}
+                >
+                  Edit
+                </Button>
+              </Box>
+            )}
           </Box>
         </SwipeableDrawer>
       )}

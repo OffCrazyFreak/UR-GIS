@@ -8,7 +8,7 @@
 }
 
 *::-webkit-scrollbar {
-  width: min(0.75vw, 1rem);
+  width: min(0.5vw, 1rem);
 }
 *::-webkit-scrollbar-track {
   background: transparent;

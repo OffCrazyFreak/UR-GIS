@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField } from "@material-ui/core";
 import { useState, useEffect } from "react";
 
 export default function TextInput({
@@ -35,6 +35,7 @@ export default function TextInput({
       label={labelText}
       type={inputType}
       fullWidth
+      variant="outlined"
       margin="dense"
       required={isRequired}
       placeholder={placeholderText}

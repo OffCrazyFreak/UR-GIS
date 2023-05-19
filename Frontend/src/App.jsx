@@ -18,12 +18,14 @@ import {
   LockOpen as LockOpenIcon,
   Lock as LockIcon,
   CloudDownload as CloudDownloadIcon,
+  CloudUpload as CloudUploadIcon,
 } from "@material-ui/icons";
 
 import { useEffect, useState } from "react";
 
 import data from "./data/organizations.json";
 
+import OrganizationForm from "./components/OrganizationForm";
 import GMap from "./components/GMap";
 
 const workDomains = ["Science", "Technology", "Ecology", "Art", "Crafts"];
@@ -33,6 +35,9 @@ export default function App() {
   const [organizations, setOrganizations] = useState([]);
 
   const [visibleOrganizations, setVisibleOrganizations] = useState([]);
+
+  const [openFormModal, setOpenFormModal] = useState(false);
+  const [organization, setOrganization] = useState();
 
   const [activeWorkDomains, setActiveWorkDomains] = useState(workDomains);
   const [activeLegalStatuses, setActiveLegalStatuses] = useState(legalStatuses);
@@ -65,6 +70,17 @@ export default function App() {
   //     });
   //   }
   // }
+
+  function handleEdit(organization) {
+    setOrganization(organization);
+    setOpenFormModal(true);
+  }
+
+  function handleDelete(organization) {
+    setOrganizations(() =>
+      organizations.filter((org) => org.id !== organization.id)
+    );
+  }
 
   useEffect(() => {
     setOrganizations(data);
@@ -101,221 +117,240 @@ export default function App() {
   }, [organizations, activeWorkDomains, activeLegalStatuses]);
 
   return (
-    <Box
-      style={{
-        marginInline: "3%",
-
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        minHeight: 1000,
-      }}
-    >
-      {/* TODO: Login to have access to add organization form */}
-      {/* TODO: Add logos to organizations */}
-      {/* TODO: Organization form modal etc. */}
-      {/* TODO: Edit and delete organization button functionality */}
-      {/* TODO: Export organizations functionality */}
-
-      {/* TODO: DEPLOY */}
-
-      <Typography variant="h2" align="center">
-        Restorative Practices Creative Cluster
-      </Typography>
+    <>
+      <OrganizationForm
+        organization={organization}
+        openModal={openFormModal}
+        setOpenModal={setOpenFormModal}
+        setOrganizations={setOrganizations}
+      />
 
       <Box
         style={{
-          marginBlock: 16,
+          marginInline: "3%",
 
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 8,
-          flexDirection: mqSub600 ? "column" : "row",
-        }}
-      >
-        <Button
-          variant="contained"
-          startIcon={<PinDropIcon />}
-          // href="#"
-          // target="_blank"
-        >
-          Apply
-        </Button>
-
-        {userIsLoggedIn && (
-          <ButtonGroup
-            variant="contained"
-            orientation={mqSub600 ? "vertical" : "horizontal"}
-          >
-            <Button
-              variant="contained"
-              startIcon={<AddCircleIcon />}
-              onClick={() => {
-                // TODO:
-                // setOrganization();
-                // setOpenFormModal(true);
-              }}
-            >
-              Add organization
-            </Button>
-
-            <Button
-              variant="contained"
-              startIcon={<CloudDownloadIcon />}
-              onClick={() => {
-                // TODO: connect to database a download json and csv
-              }}
-            >
-              Export organizations
-            </Button>
-          </ButtonGroup>
-        )}
-
-        <Button
-          variant="contained"
-          startIcon={!userIsLoggedIn ? <LockOpenIcon /> : <LockIcon />}
-          onClick={() => {
-            setUserIsLoggedIn(!userIsLoggedIn ? true : false);
-          }}
-        >
-          {!userIsLoggedIn ? "Login" : "Logout"}
-        </Button>
-      </Box>
-
-      <Box
-        style={{
-          marginBlock: 16,
-
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 8,
-          flexDirection: mqSub600 ? "column" : "row",
-        }}
-      >
-        <TextField
-          label="Search organizations"
-          size="small"
-          variant="filled"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          fullWidth={mqSub600}
-          style={{ flex: 1 }}
-          onChange={(e) =>
-            setVisibleOrganizations(
-              organizations.filter((item) => {
-                if (e.target.value)
-                  return item.name
-                    .toLowerCase()
-                    .includes(e.target.value.toLowerCase());
-                else return true;
-              })
-            )
-          }
-        />
-
-        <FormControl
-          size="small"
-          variant="filled"
-          fullWidth={mqSub600}
-          style={{ flex: 1 }}
-        >
-          <InputLabel>Legal statuses</InputLabel>
-
-          <Select
-            multiple
-            value={activeLegalStatuses}
-            onChange={(e) => {
-              setActiveLegalStatuses(e.target.value);
-            }}
-            renderValue={(selected) => selected.join(", ")}
-          >
-            {legalStatuses.map((legalStatus, index) => (
-              <MenuItem key={index} value={legalStatus}>
-                {legalStatus}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl
-          size="small"
-          variant="filled"
-          fullWidth={mqSub600}
-          style={{ flex: 1 }}
-        >
-          <InputLabel>Work domains</InputLabel>
-
-          <Select
-            multiple
-            value={activeWorkDomains}
-            onChange={(e) => {
-              setActiveWorkDomains(e.target.value);
-            }}
-            renderValue={(selected) => selected.join(", ")}
-          >
-            {workDomains.map((workDomain, index) => (
-              <MenuItem key={index} value={workDomain}>
-                {workDomain}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Box
-        style={{
-          position: "relative",
-          // maxHeight: "50%",
+          flexDirection: "column",
           height: "100%",
-          // marginBottom: 50,
+          minHeight: 1000,
         }}
       >
-        <GMap
-          visibleOrganizations={visibleOrganizations}
-          setOrganizations={setOrganizations}
-        />
-      </Box>
+        {/* TODO: Login to have access to add organization form */}
+        {/* TODO: Add logos to organizations */}
+        {/* TODO: Organization form modal etc. */}
+        {/* TODO: Edit and delete organization button functionality */}
+        {/* TODO: Import organizations functionality */}
+        {/* TODO: Export organizations functionality */}
 
-      <Box
-        style={{
-          height: 50,
+        {/* TODO: DEPLOY */}
 
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="p"
-          style={{
-            fontStyle: "italic",
-            color: "#ccc",
-            width: 150,
-            maxWidth: "30%",
-          }}
-        >
-          Restorative Practices project Ref. Ares (2022) 6461361
+        <Typography variant="h2" align="center">
+          Restorative Practices Creative Cluster
         </Typography>
 
-        <img
-          src={require("./img/rp.png")}
-          alt="Restorative practices logo"
-          style={{ width: 150, maxWidth: "30%" }}
-        />
+        <Box
+          style={{
+            marginBlock: 16,
 
-        <img
-          src={require("./img/eu_flag.png")}
-          alt="EU Flag Creative Europe"
-          style={{ width: 150, maxWidth: "30%" }}
-        />
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 8,
+            flexDirection: mqSub600 ? "column" : "row",
+          }}
+        >
+          <Button
+            variant="contained"
+            startIcon={<PinDropIcon />}
+            // href="#"
+            // target="_blank"
+          >
+            Apply
+          </Button>
+
+          {userIsLoggedIn && (
+            <ButtonGroup
+              variant="contained"
+              orientation={mqSub600 ? "vertical" : "horizontal"}
+            >
+              <Button
+                variant="contained"
+                startIcon={<AddCircleIcon />}
+                onClick={() => {
+                  setOrganization();
+                  setOpenFormModal(true);
+                }}
+              >
+                Add organization
+              </Button>
+
+              <Button
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+                onClick={() => {
+                  // TODO: connect to database to upload json or csv
+                }}
+              >
+                Import organizations
+              </Button>
+
+              <Button
+                variant="contained"
+                startIcon={<CloudDownloadIcon />}
+                onClick={() => {
+                  // TODO: connect to database to download json and csv
+                }}
+              >
+                Export organizations
+              </Button>
+            </ButtonGroup>
+          )}
+
+          <Button
+            variant="contained"
+            startIcon={!userIsLoggedIn ? <LockOpenIcon /> : <LockIcon />}
+            onClick={() => {
+              setUserIsLoggedIn(!userIsLoggedIn ? true : false);
+            }}
+          >
+            {!userIsLoggedIn ? "Login" : "Logout"}
+          </Button>
+        </Box>
+
+        <Box
+          style={{
+            marginBlock: 16,
+
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 8,
+            flexDirection: mqSub600 ? "column" : "row",
+          }}
+        >
+          <TextField
+            label="Search organizations"
+            size="small"
+            variant="filled"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            fullWidth={mqSub600}
+            style={{ flex: 1 }}
+            onChange={(e) =>
+              setVisibleOrganizations(
+                organizations.filter((item) => {
+                  if (e.target.value)
+                    return item.name
+                      .toLowerCase()
+                      .includes(e.target.value.toLowerCase());
+                  else return true;
+                })
+              )
+            }
+          />
+
+          <FormControl
+            size="small"
+            variant="filled"
+            fullWidth={mqSub600}
+            style={{ flex: 1 }}
+          >
+            <InputLabel>Legal statuses</InputLabel>
+
+            <Select
+              multiple
+              value={activeLegalStatuses}
+              onChange={(e) => {
+                setActiveLegalStatuses(e.target.value);
+              }}
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {legalStatuses.map((legalStatus, index) => (
+                <MenuItem key={index} value={legalStatus}>
+                  {legalStatus}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl
+            size="small"
+            variant="filled"
+            fullWidth={mqSub600}
+            style={{ flex: 1 }}
+          >
+            <InputLabel>Work domains</InputLabel>
+
+            <Select
+              multiple
+              value={activeWorkDomains}
+              onChange={(e) => {
+                setActiveWorkDomains(e.target.value);
+              }}
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {workDomains.map((workDomain, index) => (
+                <MenuItem key={index} value={workDomain}>
+                  {workDomain}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box
+          style={{
+            position: "relative",
+            height: "100%",
+          }}
+        >
+          <GMap
+            userIsLoggedIn={userIsLoggedIn}
+            visibleOrganizations={visibleOrganizations}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        </Box>
+
+        <Box
+          style={{
+            height: 50,
+
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            variant="body2"
+            style={{
+              fontStyle: "italic",
+              color: "#ccc",
+              width: 150,
+              maxWidth: "30%",
+            }}
+          >
+            Restorative Practices project Ref. Ares (2022) 6461361
+          </Typography>
+
+          <img
+            src={require("./img/rp.png")}
+            alt="Restorative practices logo"
+            style={{ width: 150, maxWidth: "30%" }}
+          />
+
+          <img
+            src={require("./img/eu_flag.png")}
+            alt="EU Flag Creative Europe"
+            style={{ width: 150, maxWidth: "30%" }}
+          />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
