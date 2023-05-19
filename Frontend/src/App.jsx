@@ -58,16 +58,10 @@ export default function App() {
   //       console.log(json);
   //       setOrganizations(json);
   //     } else {
-  //       handleOpenToast({
-  //         type: "error",
-  //         info: "A server error occurred whilst fetching data.",
-  //       });
+  //       console.error("A server error occurred whilst fetching data.");
   //     }
   //   } catch (error) {
-  //     handleOpenToast({
-  //       type: "error",
-  //       info: "An error occurred whilst trying to connect to server.",
-  //     });
+  //     console.error("An error occurred whilst trying to connect to server.");
   //   }
   // }
 
@@ -77,9 +71,7 @@ export default function App() {
   }
 
   function handleDelete(organization) {
-    setOrganizations(() =>
-      organizations.filter((org) => org.id !== organization.id)
-    );
+    setOrganizations(organizations.filter((org) => org.id !== organization.id));
   }
 
   useEffect(() => {
@@ -122,6 +114,7 @@ export default function App() {
         organization={organization}
         openModal={openFormModal}
         setOpenModal={setOpenFormModal}
+        organizations={organizations}
         setOrganizations={setOrganizations}
       />
 
@@ -184,7 +177,7 @@ export default function App() {
                 Add organization
               </Button>
 
-              <Button
+              {/* <Button
                 variant="contained"
                 startIcon={<CloudUploadIcon />}
                 onClick={() => {
@@ -192,9 +185,9 @@ export default function App() {
                 }}
               >
                 Import organizations
-              </Button>
+              </Button> */}
 
-              <Button
+              {/* <Button
                 variant="contained"
                 startIcon={<CloudDownloadIcon />}
                 onClick={() => {
@@ -202,7 +195,7 @@ export default function App() {
                 }}
               >
                 Export organizations
-              </Button>
+              </Button> */}
             </ButtonGroup>
           )}
 

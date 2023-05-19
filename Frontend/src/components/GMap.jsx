@@ -17,9 +17,9 @@ import {
   Edit as EditIcon,
 } from "@material-ui/icons";
 
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
-
 import { useEffect, useState } from "react";
+
+import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 
 function GMap({
   google,
