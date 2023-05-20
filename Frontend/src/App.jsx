@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
   Search as SearchIcon,
   PinDrop as PinDropIcon,
   LockOpen as LockOpenIcon,
@@ -26,6 +28,7 @@ import { useEffect, useState } from "react";
 import data from "./data/organizations.json";
 
 import OrganizationForm from "./components/OrganizationForm";
+import UserForm from "./components/UserForm";
 import GMap from "./components/GMap";
 
 const workDomains = ["Science", "Technology", "Ecology", "Art", "Crafts"];
@@ -36,8 +39,12 @@ export default function App() {
 
   const [visibleOrganizations, setVisibleOrganizations] = useState([]);
 
-  const [openFormModal, setOpenFormModal] = useState(false);
+  const [openOrganizationFormModal, setOpenOrganizationFormModal] =
+    useState(false);
   const [organization, setOrganization] = useState();
+
+  const [openUserFormModal, setOpenUserFormModal] = useState(false);
+  const [userFormMode, setUserFormMode] = useState("");
 
   const [activeWorkDomains, setActiveWorkDomains] = useState(workDomains);
   const [activeLegalStatuses, setActiveLegalStatuses] = useState(legalStatuses);
@@ -46,28 +53,31 @@ export default function App() {
 
   const mqSub600 = useMediaQuery("(max-width: 600px)");
 
-  // async function fetchData() {
-  //   try {
-  //     const serverResponse = await fetch("data/organization.json", {
-  //       method: "GET",
-  //     });
+  async function fetchOrganizations() {
+    try {
+      const serverResponse = await fetch(
+        "http://localhost:8080/api/organizations/",
+        {
+          method: "GET",
+        }
+      );
 
-  //     if (serverResponse.status == 200) {
-  //       const json = await serverResponse.json();
+      if (serverResponse.ok) {
+        const json = await serverResponse.json();
 
-  //       console.log(json);
-  //       setOrganizations(json);
-  //     } else {
-  //       console.error("A server error occurred whilst fetching data.");
-  //     }
-  //   } catch (error) {
-  //     console.error("An error occurred whilst trying to connect to server.");
-  //   }
-  // }
+        console.log(json);
+        setOrganizations(json);
+      } else {
+        console.error("A server error occurred whilst fetching data.");
+      }
+    } catch (error) {
+      console.error("An error occurred whilst trying to connect to server.");
+    }
+  }
 
   function handleEdit(organization) {
     setOrganization(organization);
-    setOpenFormModal(true);
+    setOpenOrganizationFormModal(true);
   }
 
   function handleDelete(organization) {
@@ -75,6 +85,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    // fetchOrganizations()
     setOrganizations(data);
   }, []);
 
@@ -112,10 +123,17 @@ export default function App() {
     <>
       <OrganizationForm
         organization={organization}
-        openModal={openFormModal}
-        setOpenModal={setOpenFormModal}
+        openModal={openOrganizationFormModal}
+        setOpenModal={setOpenOrganizationFormModal}
         organizations={organizations}
         setOrganizations={setOrganizations}
+        populateOrganizations={fetchOrganizations}
+      />
+
+      <UserForm
+        openModal={openUserFormModal}
+        setOpenModal={setOpenUserFormModal}
+        mode={userFormMode}
       />
 
       <Box
@@ -162,41 +180,90 @@ export default function App() {
           </Button>
 
           {userIsLoggedIn && (
-            <ButtonGroup
-              variant="contained"
-              orientation={mqSub600 ? "vertical" : "horizontal"}
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 8,
+                flexDirection: "column",
+              }}
             >
-              <Button
+              <ButtonGroup
                 variant="contained"
-                startIcon={<AddCircleIcon />}
-                onClick={() => {
-                  setOrganization();
-                  setOpenFormModal(true);
-                }}
+                orientation={mqSub600 ? "vertical" : "horizontal"}
               >
-                Add organization
-              </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<AddCircleIcon />}
+                  onClick={() => {
+                    setOrganization();
+                    setOpenOrganizationFormModal(true);
+                  }}
+                >
+                  Add organization
+                </Button>
 
-              {/* <Button
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-                onClick={() => {
-                  // TODO: connect to database to upload json or csv
-                }}
-              >
-                Import organizations
-              </Button> */}
+                {/* <Button
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                  onClick={() => {
+                    // TODO: connect to database to upload json or csv
+                  }}
+                >
+                  Import organizations
+                </Button>
 
-              {/* <Button
+                <Button
+                  variant="contained"
+                  startIcon={<CloudDownloadIcon />}
+                  onClick={() => {
+                    // TODO: connect to database to download json and csv
+                  }}
+                >
+                  Export organizations
+                </Button> */}
+              </ButtonGroup>
+
+              <ButtonGroup
+                style={{ marginInline: "auto" }}
                 variant="contained"
-                startIcon={<CloudDownloadIcon />}
-                onClick={() => {
-                  // TODO: connect to database to download json and csv
-                }}
+                orientation={mqSub600 ? "vertical" : "horizontal"}
               >
-                Export organizations
-              </Button> */}
-            </ButtonGroup>
+                <Button
+                  variant="contained"
+                  startIcon={<AddCircleIcon />}
+                  onClick={() => {
+                    setUserFormMode("add");
+                    setOpenUserFormModal(true);
+                  }}
+                >
+                  Add user
+                </Button>
+
+                <Button
+                  variant="contained"
+                  startIcon={<EditIcon />}
+                  onClick={() => {
+                    setUserFormMode("edit");
+                    setOpenUserFormModal(true);
+                  }}
+                >
+                  Edit user
+                </Button>
+
+                <Button
+                  variant="contained"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => {
+                    setUserFormMode("delete");
+                    setOpenUserFormModal(true);
+                  }}
+                >
+                  Delete user
+                </Button>
+              </ButtonGroup>
+            </Box>
           )}
 
           <Button
@@ -253,7 +320,7 @@ export default function App() {
             fullWidth={mqSub600}
             style={{ flex: 1 }}
           >
-            <InputLabel>Legal statuses</InputLabel>
+            <InputLabel>Display legal statuses</InputLabel>
 
             <Select
               multiple
@@ -277,7 +344,7 @@ export default function App() {
             fullWidth={mqSub600}
             style={{ flex: 1 }}
           >
-            <InputLabel>Work domains</InputLabel>
+            <InputLabel>Display work domains</InputLabel>
 
             <Select
               multiple

@@ -289,18 +289,6 @@ function GMap({
                 <Button
                   variant="contained"
                   style={{ width: 100 }}
-                  startIcon={<DeleteIcon />}
-                  onClick={() => {
-                    handleCloseDrawer();
-                    handleDelete(selectedMarker.orgInfo);
-                  }}
-                >
-                  Delete
-                </Button>
-
-                <Button
-                  variant="contained"
-                  style={{ width: 100 }}
                   startIcon={<EditIcon />}
                   onClick={() => {
                     handleCloseDrawer();
@@ -308,6 +296,18 @@ function GMap({
                   }}
                 >
                   Edit
+                </Button>
+
+                <Button
+                  variant="contained"
+                  style={{ width: 100 }}
+                  startIcon={<DeleteIcon />}
+                  onClick={() => {
+                    handleCloseDrawer();
+                    handleDelete(selectedMarker.orgInfo);
+                  }}
+                >
+                  Delete
                 </Button>
               </Box>
             )}

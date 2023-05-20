@@ -149,7 +149,7 @@ function OrganizationForm({
 
     // try {
     //   const serverResponse = await fetch(
-    //     `http://localhost:8080/companies/${organization?.id ?? ""}`,
+    //     `http://localhost:8080/organizations/${organization?.id ?? ""}`,
     //     request
     //   );
 
