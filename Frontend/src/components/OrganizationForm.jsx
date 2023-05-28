@@ -242,7 +242,7 @@ function OrganizationForm({
     setReferences(organization?.references);
     setLookingFor(organization?.lookingFor);
 
-    setAddress(organization?.address);
+    setAddress(organization?.address ?? "");
 
     setWebUrl(organization?.webUrl);
     setFacebookUrl(organization?.facebookUrl);
