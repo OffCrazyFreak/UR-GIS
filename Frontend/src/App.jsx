@@ -10,6 +10,9 @@ import {
   FormControl,
   InputLabel,
   Select,
+  ListItemIcon,
+  ListItemText,
+  Checkbox,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
@@ -291,7 +294,7 @@ export default function App() {
           <TextField
             label="Search organizations"
             size="small"
-            variant="filled"
+            variant="outlined"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -316,12 +319,28 @@ export default function App() {
 
           <FormControl
             size="small"
-            variant="filled"
+            variant="outlined"
             fullWidth={mqSub600}
             style={{ flex: 1 }}
           >
-            <InputLabel>Display legal statuses</InputLabel>
+            <InputLabel
+              style={{
+                background: "#fafafa",
+                paddingInline: "8px",
+                marginLeft: "-8px",
 
+                paddingBlock: "2px",
+
+                maxWidth: "125%", // Display label on full width of the input
+
+                // Prevent label from wrapping
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Display organizations with legal statuses
+            </InputLabel>
             <Select
               multiple
               value={activeLegalStatuses}
@@ -329,10 +348,26 @@ export default function App() {
                 setActiveLegalStatuses(e.target.value);
               }}
               renderValue={(selected) => selected.join(", ")}
+              MenuProps={{
+                getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
+                anchorOrigin: {
+                  vertical: "bottom",
+                },
+              }}
             >
               {legalStatuses.map((legalStatus, index) => (
-                <MenuItem key={index} value={legalStatus}>
-                  {legalStatus}
+                <MenuItem
+                  key={index}
+                  value={legalStatus}
+                  style={{ paddingBlock: "0" }}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      color="primary"
+                      checked={activeLegalStatuses.includes(legalStatus)}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={legalStatus} />
                 </MenuItem>
               ))}
             </Select>
@@ -340,12 +375,28 @@ export default function App() {
 
           <FormControl
             size="small"
-            variant="filled"
+            variant="outlined"
             fullWidth={mqSub600}
             style={{ flex: 1 }}
           >
-            <InputLabel>Display work domains</InputLabel>
+            <InputLabel
+              style={{
+                background: "#fafafa",
+                paddingInline: "8px",
+                marginLeft: "-8px",
 
+                paddingBlock: "2px",
+
+                maxWidth: "125%", // Display label on full width of the input
+
+                // Prevent label from wrapping
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Display organizations with work domains
+            </InputLabel>
             <Select
               multiple
               value={activeWorkDomains}
@@ -353,10 +404,28 @@ export default function App() {
                 setActiveWorkDomains(e.target.value);
               }}
               renderValue={(selected) => selected.join(", ")}
+              MenuProps={{
+                getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
+                anchorOrigin: {
+                  vertical: "bottom",
+                },
+              }}
             >
               {workDomains.map((workDomain, index) => (
-                <MenuItem key={index} value={workDomain}>
-                  {workDomain}
+                <MenuItem
+                  key={index}
+                  value={workDomain}
+                  style={{
+                    paddingBlock: "0",
+                  }}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      color="primary"
+                      checked={activeWorkDomains.includes(workDomain)}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={workDomain} />
                 </MenuItem>
               ))}
             </Select>

@@ -8,12 +8,16 @@ import {
   Typography,
   FormControl,
   Box,
-  FormControlLabel,
   Checkbox,
   FormGroup,
   FormHelperText,
+  InputLabel,
+  Select,
+  ListItemIcon,
+  ListItemText,
+  FormControlLabel,
+  Radio,
 } from "@material-ui/core";
-import { AddBox as AddBoxIcon } from "@material-ui/icons";
 
 import { useState, useEffect } from "react";
 
@@ -185,46 +189,27 @@ function OrganizationForm({
     // }
   }
 
-  function handleWorkDomainCheckboxToggle(workDomain) {
-    switch (workDomain) {
-      case "science":
-        setIsWorkDomainScience((prevValue) => !prevValue);
-        break;
-      case "technology":
-        setIsWorkDomainTechnology((prevValue) => !prevValue);
-        break;
-      case "ecology":
-        setIsWorkDomainEcology((prevValue) => !prevValue);
-        break;
-      case "art":
-        setIsWorkDomainArt((prevValue) => !prevValue);
-        break;
-      case "crafts":
-        setIsWorkDomainCrafts((prevValue) => !prevValue);
-        break;
-      default:
-        break;
-    }
-  }
-
   useEffect(() => {
     if (google) {
       const geocoder = new google.maps.Geocoder();
 
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === "OK") {
-          // Handle geocoding result
-          const location = results[0].formatted_address;
-          // console.log(location);
-          setFoundAddress(location);
-
-          // Update address validation status
-          setAddressIsValid(true);
-        } else {
-          // console.error("Geocoding failed:", status);
-          setAddressIsValid(false);
-        }
-      });
+      if (address === "") {
+        // Address is empty, reset foundAddress and addressIsValid states
+        setFoundAddress("");
+        setAddressIsValid(false);
+      } else {
+        // Perform geocoding request for non-empty address
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === "OK") {
+            // Handle geocoding result
+            const location = results[0].formatted_address;
+            setFoundAddress(location);
+            setAddressIsValid(true);
+          } else {
+            setAddressIsValid(false);
+          }
+        });
+      }
     }
   }, [address, google]);
 
@@ -494,7 +479,7 @@ function OrganizationForm({
                 setValueIsValid={setLookingForIsValid}
               ></TextInput>
 
-              {/* map need for address geolocation */}
+              {/* map needed for address geolocation */}
               <Box
                 tabIndex="-1"
                 style={{
@@ -509,14 +494,18 @@ function OrganizationForm({
                 variant="outlined"
                 margin="dense"
                 required
-                placeholder={"Street name and number, City, Country"}
+                placeholder="Street name and number, City, Country"
                 value={address || ""}
                 inputProps={{ minLength: 2, maxLength: 120 }}
                 error={!addressIsValid && address}
                 helperText={
                   !addressIsValid && address
                     ? "Invalid address"
-                    : foundAddress && "Found address: " + foundAddress
+                    : foundAddress && (
+                        <span style={{ fontSize: "1rem" }}>
+                          {"Found address: " + foundAddress}
+                        </span>
+                      )
                 }
                 onChange={(e) => {
                   setAddressIsValid(false); // Reset validation status when address changes
@@ -664,89 +653,120 @@ function OrganizationForm({
 
                   setLegalStatus(input);
                 }}
+                SelectProps={{
+                  MenuProps: {
+                    getContentAnchorEl: null,
+                    anchorOrigin: {
+                      vertical: "bottom",
+                    },
+                  },
+                  renderValue: (selected) => selected,
+                }}
               >
                 {legalStatuses.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    style={{
+                      paddingBlock: "0",
+                    }}
+                  >
+                    <FormControlLabel
+                      value={option.value}
+                      control={
+                        <Radio
+                          color="primary"
+                          checked={legalStatus === option.value}
+                        />
+                      }
+                      label={option.label}
+                      labelPlacement="end"
+                    />
                   </MenuItem>
                 ))}
               </TextField>
 
-              {/* work domain checkboxes */}
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checkedIcon={<AddBoxIcon />}
-                      required
-                      checked={isWorkDomainScience}
-                      onChange={() => handleWorkDomainCheckboxToggle("science")}
-                      name="isWorkDomainScience"
-                    />
-                  }
-                  label="Work domain includes science"
-                />
+              <FormControl fullWidth variant="outlined" margin="dense">
+                <InputLabel
+                  style={{
+                    background: "whitesmoke",
+                    paddingInline: "8px",
+                    marginLeft: "-8px",
+                  }}
+                >
+                  Work domains
+                </InputLabel>
+                <Select
+                  multiple
+                  value={[
+                    "Science",
+                    "Technology",
+                    "Ecology",
+                    "Art",
+                    "Crafts",
+                  ].filter((workDomain) => eval("isWorkDomain" + workDomain))}
+                  onChange={(e) => {
+                    const selectedOptions = e.target.value;
+                    // console.log(selectedOptions);
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checkedIcon={<AddBoxIcon />}
-                      required
-                      checked={isWorkDomainTechnology}
-                      onChange={() =>
-                        handleWorkDomainCheckboxToggle("technology")
-                      }
-                      name="isWorkDomainTechnology"
-                    />
-                  }
-                  label="Work domain includes technology"
-                />
+                    setIsWorkDomainScience(selectedOptions.includes("Science"));
+                    setIsWorkDomainTechnology(
+                      selectedOptions.includes("Technology")
+                    );
+                    setIsWorkDomainEcology(selectedOptions.includes("Ecology"));
+                    setIsWorkDomainArt(selectedOptions.includes("Art"));
+                    setIsWorkDomainCrafts(selectedOptions.includes("Crafts"));
 
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checkedIcon={<AddBoxIcon />}
-                      required
-                      checked={isWorkDomainEcology}
-                      onChange={() => handleWorkDomainCheckboxToggle("ecology")}
-                      name="isWorkDomainEcology"
-                    />
-                  }
-                  label="Work domain includes ecology"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checkedIcon={<AddBoxIcon />}
-                      required
-                      checked={isWorkDomainArt}
-                      onChange={() => handleWorkDomainCheckboxToggle("art")}
-                      name="isWorkDomainArt"
-                    />
-                  }
-                  label="Work domain includes art"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checkedIcon={<AddBoxIcon />}
-                      required
-                      checked={isWorkDomainCrafts}
-                      onChange={() => handleWorkDomainCheckboxToggle("crafts")}
-                      name="isWorkDomainCrafts"
-                    />
-                  }
-                  label="Work domain includes crafts"
-                />
-
+                    setWorkDomainIsValid(selectedOptions.length > 0);
+                  }}
+                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={{
+                    getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
+                    anchorOrigin: {
+                      vertical: "bottom",
+                    },
+                  }}
+                >
+                  <MenuItem value="Science" style={{ paddingBlock: "0" }}>
+                    <ListItemIcon>
+                      <Checkbox color="primary" checked={isWorkDomainScience} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Work domain includes science"} />
+                  </MenuItem>
+                  <MenuItem value="Technology" style={{ paddingBlock: "0" }}>
+                    <ListItemIcon>
+                      <Checkbox
+                        color="primary"
+                        checked={isWorkDomainTechnology}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={"Work domain includes technology"} />
+                  </MenuItem>
+                  <MenuItem value="Ecology" style={{ paddingBlock: "0" }}>
+                    <ListItemIcon>
+                      <Checkbox color="primary" checked={isWorkDomainEcology} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Work domain includes ecology"} />
+                  </MenuItem>
+                  <MenuItem value="Art" style={{ paddingBlock: "0" }}>
+                    <ListItemIcon>
+                      <Checkbox color="primary" checked={isWorkDomainArt} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Work domain includes art"} />
+                  </MenuItem>
+                  <MenuItem value="Crafts" style={{ paddingBlock: "0" }}>
+                    <ListItemIcon>
+                      <Checkbox color="primary" checked={isWorkDomainCrafts} />
+                    </ListItemIcon>
+                    <ListItemText primary={"Work domain includes crafts"} />
+                  </MenuItem>
+                </Select>
                 <FormHelperText error={!workDomainIsValid}>
                   {workDomainIsValid
                     ? "Select one or more work domains"
                     : "Select at least one work domain"}
                 </FormHelperText>
-              </FormGroup>
+              </FormControl>
             </Box>
 
             <Box
