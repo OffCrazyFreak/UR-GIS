@@ -151,10 +151,8 @@ export default function App() {
       >
         {/* TODO: Login to have access to add organization form */}
         {/* TODO: Add logos to organizations */}
-        {/* TODO: Organization form modal etc. */}
-        {/* TODO: Edit and delete organization button functionality */}
-        {/* TODO: Import organizations functionality */}
-        {/* TODO: Export organizations functionality */}
+        {/* TODO: Organization form modal functionality etc. */}
+        {/* TODO: Import & Export organizations functionality */}
 
         {/* TODO: DEPLOY */}
 
@@ -339,7 +337,7 @@ export default function App() {
                 textOverflow: "ellipsis",
               }}
             >
-              Display organizations with legal statuses
+              Display organizations with legal status
             </InputLabel>
             <Select
               multiple
@@ -352,6 +350,7 @@ export default function App() {
                 getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
                 anchorOrigin: {
                   vertical: "bottom",
+                  horizontal: "left", // required
                 },
               }}
             >
@@ -408,6 +407,7 @@ export default function App() {
                 getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
                 anchorOrigin: {
                   vertical: "bottom",
+                  horizontal: "left", // required
                 },
               }}
             >

@@ -5,11 +5,11 @@ import {
   ListItem,
   ListItemText,
   Link,
-  SwipeableDrawer,
   Tooltip,
   IconButton,
   Button,
   Box,
+  Drawer,
 } from "@material-ui/core";
 import {
   Close as CloseIcon,
@@ -73,7 +73,7 @@ function GMap({
         style={{
           borderRadius: 16,
 
-          marginBottom: 50,
+          marginBottom: 20,
         }}
         initialCenter={{ lat: 52.52, lng: 13.4049 }}
       >
@@ -104,7 +104,7 @@ function GMap({
       </Map>
 
       {selectedMarker && (
-        <SwipeableDrawer
+        <Drawer
           anchor={mqSub600 ? "bottom" : "left"}
           open={selectedMarker !== null}
           onOpen={() => {}} // required
@@ -312,7 +312,7 @@ function GMap({
               </Box>
             )}
           </Box>
-        </SwipeableDrawer>
+        </Drawer>
       )}
     </>
   );

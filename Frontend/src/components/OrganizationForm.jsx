@@ -25,11 +25,8 @@ import { Map, GoogleApiWrapper } from "google-maps-react";
 
 import TextInput from "./TextInput";
 
-const legalStatuses = [
-  { value: "Non-profit", label: "Non-profit" },
-  { value: "For-profit", label: "For-profit" },
-  { value: "Individual", label: "Individual" },
-];
+const workDomains = ["Science", "Technology", "Ecology", "Art", "Crafts"];
+const legalStatuses = ["For-profit", "Non-profit", "Individual"];
 
 function OrganizationForm({
   google,
@@ -214,23 +211,6 @@ function OrganizationForm({
   }, [address, google]);
 
   useEffect(() => {
-    const atLeastOneWorkDomainSelected =
-      isWorkDomainScience ||
-      isWorkDomainTechnology ||
-      isWorkDomainEcology ||
-      isWorkDomainArt ||
-      isWorkDomainCrafts;
-
-    setWorkDomainIsValid(atLeastOneWorkDomainSelected);
-  }, [
-    isWorkDomainScience,
-    isWorkDomainTechnology,
-    isWorkDomainEcology,
-    isWorkDomainArt,
-    isWorkDomainCrafts,
-  ]);
-
-  useEffect(() => {
     // atributes states
     setName(organization?.name);
     setDescription(organization?.description);
@@ -249,7 +229,7 @@ function OrganizationForm({
     setInstagramUrl(organization?.instagramUrl);
     setLinkedInUrl(organization?.linkedInUrl);
 
-    setLegalStatus(organization?.legalStatus || legalStatuses[0].value);
+    setLegalStatus(organization?.legalStatus || legalStatuses[0]);
 
     setIsWorkDomainScience(organization?.isWorkDomainScience ?? true);
     setIsWorkDomainTechnology(organization?.isWorkDomainTechnology ?? true);
@@ -645,11 +625,7 @@ function OrganizationForm({
                 onChange={(e) => {
                   const input = e.target.value;
 
-                  setLegalStatusIsValid(
-                    legalStatuses
-                      .map((category) => category.value)
-                      .includes(input)
-                  );
+                  setLegalStatusIsValid(legalStatuses.includes(input));
 
                   setLegalStatus(input);
                 }}
@@ -658,6 +634,7 @@ function OrganizationForm({
                     getContentAnchorEl: null,
                     anchorOrigin: {
                       vertical: "bottom",
+                      horizontal: "left", // required
                     },
                   },
                   renderValue: (selected) => selected,
@@ -665,21 +642,21 @@ function OrganizationForm({
               >
                 {legalStatuses.map((option) => (
                   <MenuItem
-                    key={option.value}
-                    value={option.value}
+                    key={option}
+                    value={option}
                     style={{
                       paddingBlock: "0",
                     }}
                   >
                     <FormControlLabel
-                      value={option.value}
+                      value={option}
                       control={
                         <Radio
                           color="primary"
-                          checked={legalStatus === option.value}
+                          checked={legalStatus === option}
                         />
                       }
-                      label={option.label}
+                      label={option}
                       labelPlacement="end"
                     />
                   </MenuItem>
@@ -698,24 +675,22 @@ function OrganizationForm({
                 </InputLabel>
                 <Select
                   multiple
-                  value={[
-                    "Science",
-                    "Technology",
-                    "Ecology",
-                    "Art",
-                    "Crafts",
-                  ].filter((workDomain) => eval("isWorkDomain" + workDomain))}
+                  value={workDomains.filter((workDomain) =>
+                    eval("isWorkDomain" + workDomain)
+                  )}
                   onChange={(e) => {
                     const selectedOptions = e.target.value;
                     // console.log(selectedOptions);
 
-                    setIsWorkDomainScience(selectedOptions.includes("Science"));
-                    setIsWorkDomainTechnology(
-                      selectedOptions.includes("Technology")
-                    );
-                    setIsWorkDomainEcology(selectedOptions.includes("Ecology"));
-                    setIsWorkDomainArt(selectedOptions.includes("Art"));
-                    setIsWorkDomainCrafts(selectedOptions.includes("Crafts"));
+                    workDomains.forEach((workDomain) => {
+                      eval(
+                        "setIsWorkDomain" +
+                          workDomain +
+                          "(" +
+                          selectedOptions.includes(workDomain) +
+                          ")"
+                      );
+                    });
 
                     setWorkDomainIsValid(selectedOptions.length > 0);
                   }}
@@ -724,42 +699,29 @@ function OrganizationForm({
                     getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
                     anchorOrigin: {
                       vertical: "bottom",
+                      horizontal: "left", // required
                     },
                   }}
                 >
-                  <MenuItem value="Science" style={{ paddingBlock: "0" }}>
-                    <ListItemIcon>
-                      <Checkbox color="primary" checked={isWorkDomainScience} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Work domain includes science"} />
-                  </MenuItem>
-                  <MenuItem value="Technology" style={{ paddingBlock: "0" }}>
-                    <ListItemIcon>
-                      <Checkbox
-                        color="primary"
-                        checked={isWorkDomainTechnology}
+                  {workDomains.map((workDomain) => (
+                    <MenuItem
+                      key={workDomain}
+                      value={workDomain}
+                      style={{ paddingBlock: "0" }}
+                    >
+                      <ListItemIcon>
+                        <Checkbox
+                          color="primary"
+                          checked={eval("isWorkDomain" + workDomain)}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          "Work domain includes " + workDomain.toLowerCase()
+                        }
                       />
-                    </ListItemIcon>
-                    <ListItemText primary={"Work domain includes technology"} />
-                  </MenuItem>
-                  <MenuItem value="Ecology" style={{ paddingBlock: "0" }}>
-                    <ListItemIcon>
-                      <Checkbox color="primary" checked={isWorkDomainEcology} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Work domain includes ecology"} />
-                  </MenuItem>
-                  <MenuItem value="Art" style={{ paddingBlock: "0" }}>
-                    <ListItemIcon>
-                      <Checkbox color="primary" checked={isWorkDomainArt} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Work domain includes art"} />
-                  </MenuItem>
-                  <MenuItem value="Crafts" style={{ paddingBlock: "0" }}>
-                    <ListItemIcon>
-                      <Checkbox color="primary" checked={isWorkDomainCrafts} />
-                    </ListItemIcon>
-                    <ListItemText primary={"Work domain includes crafts"} />
-                  </MenuItem>
+                    </MenuItem>
+                  ))}
                 </Select>
                 <FormHelperText error={!workDomainIsValid}>
                   {workDomainIsValid
