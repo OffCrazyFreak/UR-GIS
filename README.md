@@ -1,4 +1,4 @@
-# UR GIS
+# Restorative Practices Creative Cluster
 
 ## Frontend Available Scripts
 
