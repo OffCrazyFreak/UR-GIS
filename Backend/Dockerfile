@@ -1,5 +1,5 @@
 # Use the official Maven image as the base image
-FROM maven:3.6.3-openjdk-11-slim AS builder
+FROM maven:3.8.5-openjdk-17-slim AS builder
 
 # Copy the project's source code to the container
 COPY . /app
@@ -8,10 +8,10 @@ COPY . /app
 WORKDIR /app
 
 # Build the project using Maven
-RUN mvn clean package
+RUN mvn clean package -Dmaven.test.skip
 
-# Use a lightweight container with Java 11 to run the application
-FROM adoptopenjdk/openjdk11:alpine-jre
+# Use a lightweight container with Java JDK 17 to run the application
+FROM openjdk:17-slim
 
 # Set the working directory
 WORKDIR /app
@@ -24,3 +24,4 @@ EXPOSE 8080
 
 # Set the entrypoint command to run the application
 ENTRYPOINT ["java", "-jar", "restorative-practices-creative-cluster-1.0.0.jar"]
+

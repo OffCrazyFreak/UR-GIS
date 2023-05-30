@@ -143,14 +143,14 @@ function OrganizationForm({
 
     try {
       const serverResponse = await fetch(
-        "/api/organizations/" + (organization?.id ?? ""),
+        "/api/organizations" + (organization ? "/" + organization.id : ""),
         request
       );
 
       if (serverResponse.ok) {
         console.log(
           "Organization " +
-            organization.name +
+            organizationData.name +
             " " +
             (organization ? "updated" : "added") +
             "."

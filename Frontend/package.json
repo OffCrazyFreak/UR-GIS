@@ -1,5 +1,5 @@
 {
-  "name": "Creative_Cluster-Frontend",
+  "name": "creative_cluster-frontend",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8080",

@@ -32,7 +32,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
 
   async function fetchUsers() {
     try {
-      const serverResponse = await fetch("http://localhost:8080/api/users/", {
+      const serverResponse = await fetch("/api/users", {
         method: "GET",
       });
 
@@ -86,7 +86,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
 
     // try {
     //   const serverResponse = await fetch(
-    //     `http://localhost:8080/api/users/${mode === "edit" || mode === "delete" ? user.id : ""}`,
+    //     `/api/users${mode === "edit" || mode === "delete" ? "/" + user.id : ""}`,
     //     request
     //   );
 
