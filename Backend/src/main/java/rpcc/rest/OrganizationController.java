@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rpcc.domain.Organization;
+import rpcc.service.OrganizationNotFoundException;
 import rpcc.service.OrganizationService;
 
 import javax.validation.Valid;
@@ -24,22 +25,31 @@ public class OrganizationController {
 
     @PostMapping("")
     public ResponseEntity<Organization> addOrganization(@Valid @RequestBody Organization organization) {
-        Organization organizationCreated = organizationService.addOrganization(organization);
-        if (organizationCreated != null)
-            return ResponseEntity.ok(organizationCreated);
+        Organization addedOrganization = organizationService.addOrganization(organization);
+        if (addedOrganization != null)
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedOrganization);
         else
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
-//    put
-
+    @PutMapping("/{id}")
+    public ResponseEntity<Organization> updateOrganization(@PathVariable Long id, @Valid @RequestBody Organization updatedOrganization) {
+        try {
+            Organization organization = organizationService.updateOrganization(id, updatedOrganization);
+            return ResponseEntity.ok(organization);
+        } catch (OrganizationNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity deleteOrganization(PathVariable Long id){
-        if (!organizationService.countById(id))
-            return new ResponseEntity("Organization with id " + id + " not found", HttpStatus.NOT_FOUND);
-        userService.deleteUser(id);
-        return new ResponseEntity("User under id: " + id + " successfully deleted.", HttpStatus.OK);
+    public ResponseEntity<String> deleteOrganization(@PathVariable Long id) {
+        try {
+            organizationService.deleteOrganization(id);
+            return ResponseEntity.ok("Organization deleted successfully");
+        } catch (OrganizationNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Organization with ID " + id + " not found");
+        }
     }
+
 }

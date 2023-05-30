@@ -9,5 +9,7 @@ public interface OrganizationService {
 
     Organization addOrganization(Organization organization);
 
-//    Organization deleteOrganization(Long id);
+    Organization updateOrganization(Long id, Organization updatedOrganization) throws OrganizationNotFoundException;
+
+    void deleteOrganization(Long id);
 }

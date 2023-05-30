@@ -67,11 +67,25 @@ public class Organization {
     @Column(length = 20, nullable = false)
     private String legalStatus;
 
-    private boolean isWorkDomainScience;
-    private boolean isWorkDomainTechnology;
-    private boolean isWorkDomainEcology;
-    private boolean isWorkDomainArt;
-    private boolean isWorkDomainCrafts;
+    @NotNull
+    @Column(nullable = false)
+    private Boolean workDomainIncludesScience;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean workDomainIncludesTechnology;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean workDomainIncludesEcology;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean workDomainIncludesArt;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean workDomainIncludesCrafts;
 
     public Long getId() {
         return id;
@@ -119,6 +133,14 @@ public class Organization {
 
     public void setContactTel(String contactTel) {
         this.contactTel = contactTel;
+    }
+
+    public String getReferences() {
+        return references;
+    }
+
+    public void setReferences(String references) {
+        this.references = references;
     }
 
     public String getLookingFor() {
@@ -177,43 +199,43 @@ public class Organization {
         this.legalStatus = legalStatus;
     }
 
-    public boolean isWorkDomainScience() {
-        return isWorkDomainScience;
+    public Boolean getWorkDomainIncludesScience() {
+        return workDomainIncludesScience;
     }
 
-    public void setWorkDomainScience(boolean workDomainScience) {
-        isWorkDomainScience = workDomainScience;
+    public void setWorkDomainIncludesScience(Boolean workDomainIncludesScience) {
+        this.workDomainIncludesScience = workDomainIncludesScience;
     }
 
-    public boolean isWorkDomainTechnology() {
-        return isWorkDomainTechnology;
+    public Boolean getWorkDomainIncludesTechnology() {
+        return workDomainIncludesTechnology;
     }
 
-    public void setWorkDomainTechnology(boolean workDomainTechnology) {
-        isWorkDomainTechnology = workDomainTechnology;
+    public void setWorkDomainIncludesTechnology(Boolean workDomainIncludesTechnology) {
+        this.workDomainIncludesTechnology = workDomainIncludesTechnology;
     }
 
-    public boolean isWorkDomainEcology() {
-        return isWorkDomainEcology;
+    public Boolean getWorkDomainIncludesEcology() {
+        return workDomainIncludesEcology;
     }
 
-    public void setWorkDomainEcology(boolean workDomainEcology) {
-        isWorkDomainEcology = workDomainEcology;
+    public void setWorkDomainIncludesEcology(Boolean workDomainIncludesEcology) {
+        this.workDomainIncludesEcology = workDomainIncludesEcology;
     }
 
-    public boolean isWorkDomainArt() {
-        return isWorkDomainArt;
+    public Boolean getWorkDomainIncludesArt() {
+        return workDomainIncludesArt;
     }
 
-    public void setWorkDomainArt(boolean workDomainArt) {
-        isWorkDomainArt = workDomainArt;
+    public void setWorkDomainIncludesArt(Boolean workDomainIncludesArt) {
+        this.workDomainIncludesArt = workDomainIncludesArt;
     }
 
-    public boolean isWorkDomainCrafts() {
-        return isWorkDomainCrafts;
+    public Boolean getWorkDomainIncludesCrafts() {
+        return workDomainIncludesCrafts;
     }
 
-    public void setWorkDomainCrafts(boolean workDomainCrafts) {
-        isWorkDomainCrafts = workDomainCrafts;
+    public void setWorkDomainIncludesCrafts(Boolean workDomainIncludesCrafts) {
+        this.workDomainIncludesCrafts = workDomainIncludesCrafts;
     }
 }
