@@ -351,6 +351,157 @@ function OrganizationForm({
                 setValueIsValid={setDescriptionIsValid}
               ></TextInput>
 
+              {/* map needed for address geolocation */}
+              <Box
+                tabIndex="-1"
+                style={{
+                  display: "none",
+                }}
+              >
+                <Map google={google} />
+              </Box>
+              <TextField
+                label="Address"
+                fullWidth
+                variant="outlined"
+                margin="dense"
+                required
+                placeholder="Street name and number, City, Country"
+                value={address || ""}
+                inputProps={{ minLength: 2, maxLength: 120 }}
+                error={!addressIsValid && address}
+                helperText={
+                  !addressIsValid && address
+                    ? "Invalid address"
+                    : foundAddress && (
+                        <span style={{ fontSize: "1rem" }}>
+                          {"Found address: " + foundAddress}
+                        </span>
+                      )
+                }
+                onChange={(e) => {
+                  setAddressIsValid(false); // Reset validation status when address changes
+                  setAddress(e.target.value);
+                }}
+              />
+
+              <TextField
+                label="Legal status"
+                fullWidth
+                select
+                variant="outlined"
+                margin="dense"
+                helperText={!legalStatusIsValid && "Invalid legal status"}
+                value={legalStatus}
+                error={!legalStatusIsValid}
+                onChange={(e) => {
+                  const input = e.target.value;
+
+                  setLegalStatusIsValid(legalStatuses.includes(input));
+
+                  setLegalStatus(input);
+                }}
+                SelectProps={{
+                  MenuProps: {
+                    getContentAnchorEl: null,
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left", // required
+                    },
+                  },
+                  renderValue: (selected) => selected,
+                }}
+              >
+                {legalStatuses.map((option) => (
+                  <MenuItem
+                    key={option}
+                    value={option}
+                    style={{
+                      paddingBlock: "0",
+                    }}
+                  >
+                    <FormControlLabel
+                      value={option}
+                      control={
+                        <Radio
+                          color="primary"
+                          checked={legalStatus === option}
+                        />
+                      }
+                      label={option}
+                      labelPlacement="end"
+                    />
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              <FormControl fullWidth variant="outlined" margin="dense">
+                <InputLabel
+                  style={{
+                    background: "whitesmoke",
+                    paddingInline: "8px",
+                    marginLeft: "-8px",
+                  }}
+                >
+                  Work domains
+                </InputLabel>
+                <Select
+                  multiple
+                  value={workDomains.filter((workDomain) =>
+                    eval("workDomainIncludes" + workDomain)
+                  )}
+                  onChange={(e) => {
+                    const selectedOptions = e.target.value;
+                    // console.log(selectedOptions);
+
+                    workDomains.forEach((workDomain) => {
+                      eval(
+                        "setWorkDomainIncludes" +
+                          workDomain +
+                          "(" +
+                          selectedOptions.includes(workDomain) +
+                          ")"
+                      );
+                    });
+
+                    setWorkDomainIsValid(selectedOptions.length > 0);
+                  }}
+                  renderValue={(selected) => selected.join(", ")}
+                  MenuProps={{
+                    getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left", // required
+                    },
+                  }}
+                >
+                  {workDomains.map((workDomain) => (
+                    <MenuItem
+                      key={workDomain}
+                      value={workDomain}
+                      style={{ paddingBlock: "0" }}
+                    >
+                      <ListItemIcon>
+                        <Checkbox
+                          color="primary"
+                          checked={eval("workDomainIncludes" + workDomain)}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          "Work domain includes " + workDomain.toLowerCase()
+                        }
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText error={!workDomainIsValid}>
+                  {workDomainIsValid
+                    ? "Select one or more work domains"
+                    : "Select at least one work domain"}
+                </FormHelperText>
+              </FormControl>
+
               {/* contact fields */}
               <FormGroup>
                 <TextInput
@@ -458,40 +609,6 @@ function OrganizationForm({
                 valueIsValid={lookingForIsValid}
                 setValueIsValid={setLookingForIsValid}
               ></TextInput>
-
-              {/* map needed for address geolocation */}
-              <Box
-                tabIndex="-1"
-                style={{
-                  display: "none",
-                }}
-              >
-                <Map google={google} />
-              </Box>
-              <TextField
-                label="Address"
-                fullWidth
-                variant="outlined"
-                margin="dense"
-                required
-                placeholder="Street name and number, City, Country"
-                value={address || ""}
-                inputProps={{ minLength: 2, maxLength: 120 }}
-                error={!addressIsValid && address}
-                helperText={
-                  !addressIsValid && address
-                    ? "Invalid address"
-                    : foundAddress && (
-                        <span style={{ fontSize: "1rem" }}>
-                          {"Found address: " + foundAddress}
-                        </span>
-                      )
-                }
-                onChange={(e) => {
-                  setAddressIsValid(false); // Reset validation status when address changes
-                  setAddress(e.target.value);
-                }}
-              />
 
               {/* urls */}
               <FormGroup>
@@ -612,123 +729,6 @@ function OrganizationForm({
                   setValueIsValid={setLinkedInUrlIsValid}
                 ></TextInput>
               </FormGroup>
-
-              <TextField
-                label="Legal status"
-                fullWidth
-                select
-                variant="outlined"
-                margin="dense"
-                helperText={!legalStatusIsValid && "Invalid legal status"}
-                value={legalStatus}
-                error={!legalStatusIsValid}
-                onChange={(e) => {
-                  const input = e.target.value;
-
-                  setLegalStatusIsValid(legalStatuses.includes(input));
-
-                  setLegalStatus(input);
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    getContentAnchorEl: null,
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left", // required
-                    },
-                  },
-                  renderValue: (selected) => selected,
-                }}
-              >
-                {legalStatuses.map((option) => (
-                  <MenuItem
-                    key={option}
-                    value={option}
-                    style={{
-                      paddingBlock: "0",
-                    }}
-                  >
-                    <FormControlLabel
-                      value={option}
-                      control={
-                        <Radio
-                          color="primary"
-                          checked={legalStatus === option}
-                        />
-                      }
-                      label={option}
-                      labelPlacement="end"
-                    />
-                  </MenuItem>
-                ))}
-              </TextField>
-
-              <FormControl fullWidth variant="outlined" margin="dense">
-                <InputLabel
-                  style={{
-                    background: "whitesmoke",
-                    paddingInline: "8px",
-                    marginLeft: "-8px",
-                  }}
-                >
-                  Work domains
-                </InputLabel>
-                <Select
-                  multiple
-                  value={workDomains.filter((workDomain) =>
-                    eval("workDomainIncludes" + workDomain)
-                  )}
-                  onChange={(e) => {
-                    const selectedOptions = e.target.value;
-                    // console.log(selectedOptions);
-
-                    workDomains.forEach((workDomain) => {
-                      eval(
-                        "setWorkDomainIncludes" +
-                          workDomain +
-                          "(" +
-                          selectedOptions.includes(workDomain) +
-                          ")"
-                      );
-                    });
-
-                    setWorkDomainIsValid(selectedOptions.length > 0);
-                  }}
-                  renderValue={(selected) => selected.join(", ")}
-                  MenuProps={{
-                    getContentAnchorEl: null, // ensures that the menu is positioned relative to the select input
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left", // required
-                    },
-                  }}
-                >
-                  {workDomains.map((workDomain) => (
-                    <MenuItem
-                      key={workDomain}
-                      value={workDomain}
-                      style={{ paddingBlock: "0" }}
-                    >
-                      <ListItemIcon>
-                        <Checkbox
-                          color="primary"
-                          checked={eval("workDomainIncludes" + workDomain)}
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={
-                          "Work domain includes " + workDomain.toLowerCase()
-                        }
-                      />
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error={!workDomainIsValid}>
-                  {workDomainIsValid
-                    ? "Select one or more work domains"
-                    : "Select at least one work domain"}
-                </FormHelperText>
-              </FormControl>
             </Box>
 
             <Box
