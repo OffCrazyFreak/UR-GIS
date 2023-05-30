@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bazepodataka
+      POSTGRES_DB: rpcc
+
+  spring-app:
+    build:
+      context: ./Backend/Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rpcc
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bazepodataka
+
+  react-app:
+    build:
+      context: ./Frontend/Dockerfile
+    restart: always
+    ports:
+      - 80:80
+
