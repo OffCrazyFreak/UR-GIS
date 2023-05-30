@@ -14,11 +14,11 @@
     "lookingFor": null,
     "address": "Brandenburg Gate, Pariser Platz, 10117 Berlin, Germany",
     "legalStatus": "Non-profit",
-    "isWorkDomainScience": false,
-    "isWorkDomainTechnology": false,
-    "isWorkDomainEcology": false,
-    "isWorkDomainArt": true,
-    "isWorkDomainCrafts": false
+    "workDomainIncludesScience": false,
+    "workDomainIncludesTechnology": false,
+    "workDomainIncludesEcology": false,
+    "workDomainIncludesArt": true,
+    "workDomainIncludesCrafts": false
   },
   {
     "id": 1,
@@ -35,11 +35,11 @@
     "lookingFor": "Looking for a marketing specialist",
     "address": "Eiffel Tower, Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
     "legalStatus": "For-profit",
-    "isWorkDomainScience": true,
-    "isWorkDomainTechnology": true,
-    "isWorkDomainEcology": true,
-    "isWorkDomainArt": true,
-    "isWorkDomainCrafts": false
+    "workDomainIncludesScience": true,
+    "workDomainIncludesTechnology": true,
+    "workDomainIncludesEcology": true,
+    "workDomainIncludesArt": true,
+    "workDomainIncludesCrafts": false
   },
   {
     "id": 2,
@@ -56,11 +56,11 @@
     "lookingFor": "Looking for an experienced project manager",
     "address": "Colosseum, Piazza del Colosseo, 00184 Rome, Italy",
     "legalStatus": "Non-profit",
-    "isWorkDomainScience": true,
-    "isWorkDomainTechnology": false,
-    "isWorkDomainEcology": true,
-    "isWorkDomainArt": true,
-    "isWorkDomainCrafts": false
+    "workDomainIncludesScience": true,
+    "workDomainIncludesTechnology": false,
+    "workDomainIncludesEcology": true,
+    "workDomainIncludesArt": true,
+    "workDomainIncludesCrafts": false
   },
   {
     "id": 3,
@@ -69,19 +69,19 @@
     "contactName": "Alice Jones",
     "contactEmail": "alicejones@example.com",
     "contactTel": "+1 555-555-5555",
-    "webUrl": "https://www.example.com",
-    "facebookUrl": "https://www.facebook.com/example",
-    "instagramUrl": "https://www.instagram.com/example",
-    "linkedInUrl": "https://www.linkedin.com/company/example",
-    "references": "Reference 1, Reference 2, Reference 3",
-    "lookingFor": "Looking for interns for summer 2023",
+    "references": null,
+    "lookingFor": null,
+    "webUrl": null,
+    "facebookUrl": null,
+    "instagramUrl": null,
+    "linkedInUrl": null,
     "address": "Prague Castle, Hradčany, 119 08 Prague 1, Czech Republic",
     "legalStatus": "Individual",
-    "isWorkDomainScience": false,
-    "isWorkDomainTechnology": true,
-    "isWorkDomainEcology": true,
-    "isWorkDomainArt": false,
-    "isWorkDomainCrafts": false
+    "workDomainIncludesScience": false,
+    "workDomainIncludesTechnology": true,
+    "workDomainIncludesEcology": true,
+    "workDomainIncludesArt": false,
+    "workDomainIncludesCrafts": false
   },
   {
     "id": 4,
@@ -98,10 +98,10 @@
     "lookingFor": "Professional associate in the administration and production of scientific, technological and artistic projects",
     "address": "Vodovodna ulica 15, Zagreb",
     "legalStatus": "Non-profit",
-    "isWorkDomainScience": false,
-    "isWorkDomainTechnology": false,
-    "isWorkDomainEcology": false,
-    "isWorkDomainArt": true,
-    "isWorkDomainCrafts": true
+    "workDomainIncludesScience": false,
+    "workDomainIncludesTechnology": false,
+    "workDomainIncludesEcology": false,
+    "workDomainIncludesArt": true,
+    "workDomainIncludesCrafts": true
   }
 ]

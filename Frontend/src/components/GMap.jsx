@@ -107,7 +107,6 @@ function GMap({
         <Drawer
           anchor={mqSub600 ? "bottom" : "left"}
           open={selectedMarker !== null}
-          onOpen={() => {}} // required
           onClose={handleCloseDrawer}
         >
           <Box

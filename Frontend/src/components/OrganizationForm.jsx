@@ -33,8 +33,7 @@ function OrganizationForm({
   organization,
   openModal,
   setOpenModal,
-  organizations,
-  setOrganizations,
+  fetchOrganizations,
 }) {
   // atributes states
   const [name, setName] = useState();
@@ -57,11 +56,12 @@ function OrganizationForm({
 
   const [legalStatus, setLegalStatus] = useState();
 
-  const [isWorkDomainScience, setIsWorkDomainScience] = useState();
-  const [isWorkDomainTechnology, setIsWorkDomainTechnology] = useState();
-  const [isWorkDomainEcology, setIsWorkDomainEcology] = useState();
-  const [isWorkDomainArt, setIsWorkDomainArt] = useState();
-  const [isWorkDomainCrafts, setIsWorkDomainCrafts] = useState();
+  const [workDomainIncludesScience, setWorkDomainIncludesScience] = useState();
+  const [workDomainIncludesTechnology, setWorkDomainIncludesTechnology] =
+    useState();
+  const [workDomainIncludesEcology, setWorkDomainIncludesEcology] = useState();
+  const [workDomainIncludesArt, setWorkDomainIncludesArt] = useState();
+  const [workDomainIncludesCrafts, setWorkDomainIncludesCrafts] = useState();
 
   // validation states
   const [nameIsValid, setNameIsValid] = useState(false);
@@ -126,11 +126,11 @@ function OrganizationForm({
 
       legalStatus: legalStatus,
 
-      isWorkDomainScience: isWorkDomainScience,
-      isWorkDomainTechnology: isWorkDomainTechnology,
-      isWorkDomainEcology: isWorkDomainEcology,
-      isWorkDomainArt: isWorkDomainArt,
-      isWorkDomainCrafts: isWorkDomainCrafts,
+      workDomainIncludesScience: workDomainIncludesScience,
+      workDomainIncludesTechnology: workDomainIncludesTechnology,
+      workDomainIncludesEcology: workDomainIncludesEcology,
+      workDomainIncludesArt: workDomainIncludesArt,
+      workDomainIncludesCrafts: workDomainIncludesCrafts,
     };
 
     const request = {
@@ -141,49 +141,43 @@ function OrganizationForm({
       body: JSON.stringify(organizationData),
     };
 
-    // TODO: (temp) remove after backend is connected
-    setOrganizations((prevOrganizations) => [
-      ...prevOrganizations,
-      organizationData,
-    ]);
-    setOpenModal(false);
+    try {
+      const serverResponse = await fetch(
+        "/api/organizations/" + (organization?.id ?? ""),
+        request
+      );
 
-    // try {
-    //   const serverResponse = await fetch(
-    //     `http://localhost:8080/organizations/${organization?.id ?? ""}`,
-    //     request
-    //   );
+      if (serverResponse.ok) {
+        console.log(
+          "Organization " +
+            organization.name +
+            " " +
+            (organization ? "updated" : "added") +
+            "."
+        );
 
-    //   if (serverResponse.ok) {
-    //     console.log(
-    //       "Organization " +
-    //         organization.name +
-    //         " " +
-    //         (organization ? "updated" : "added") +
-    //         "."
-    //     );
-
-    //     setOpenModal(false);
-    //   } else if (serverResponse.status === 400) {
-    //     console.error("Invalid company details.");
-    //   } else if (serverResponse.status === 403) {
-    //     console.error(
-    //       "Admin privileges are required for manipulating organizations."
-    //     );
-    //   } else if (serverResponse.status === 404) {
-    //     console.error(
-    //       "Organization with id " + organization.id + " does not exist."
-    //     );
-    //   } else {
-    //     console.error(
-    //       "An unknown error occurred whilst trying to " +
-    //         (organization ? "update" : "add") +
-    //         " organization."
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("An error occurred whilst trying to connect to server.");
-    // }
+        fetchOrganizations();
+        setOpenModal(false);
+      } else if (serverResponse.status === 400) {
+        console.error("Invalid company details.");
+      } else if (serverResponse.status === 403) {
+        console.error(
+          "Admin privileges are required for manipulating organizations."
+        );
+      } else if (serverResponse.status === 404) {
+        console.error(
+          "Organization with ID " + organization.id + " does not exist."
+        );
+      } else {
+        console.error(
+          "An unknown error occurred whilst trying to " +
+            (organization ? "update" : "add") +
+            " organization."
+        );
+      }
+    } catch (error) {
+      console.error("An error occurred whilst trying to connect to server.");
+    }
   }
 
   useEffect(() => {
@@ -231,11 +225,17 @@ function OrganizationForm({
 
     setLegalStatus(organization?.legalStatus || legalStatuses[0]);
 
-    setIsWorkDomainScience(organization?.isWorkDomainScience ?? true);
-    setIsWorkDomainTechnology(organization?.isWorkDomainTechnology ?? true);
-    setIsWorkDomainEcology(organization?.isWorkDomainEcology ?? true);
-    setIsWorkDomainArt(organization?.isWorkDomainArt ?? true);
-    setIsWorkDomainCrafts(organization?.isWorkDomainCrafts ?? true);
+    setWorkDomainIncludesScience(
+      organization?.workDomainIncludesScience ?? true
+    );
+    setWorkDomainIncludesTechnology(
+      organization?.workDomainIncludesTechnology ?? true
+    );
+    setWorkDomainIncludesEcology(
+      organization?.workDomainIncludesEcology ?? true
+    );
+    setWorkDomainIncludesArt(organization?.workDomainIncludesArt ?? true);
+    setWorkDomainIncludesCrafts(organization?.workDomainIncludesCrafts ?? true);
 
     // validation states
     setNameIsValid(organization ? true : false);
@@ -676,7 +676,7 @@ function OrganizationForm({
                 <Select
                   multiple
                   value={workDomains.filter((workDomain) =>
-                    eval("isWorkDomain" + workDomain)
+                    eval("workDomainIncludes" + workDomain)
                   )}
                   onChange={(e) => {
                     const selectedOptions = e.target.value;
@@ -684,7 +684,7 @@ function OrganizationForm({
 
                     workDomains.forEach((workDomain) => {
                       eval(
-                        "setIsWorkDomain" +
+                        "setWorkDomainIncludes" +
                           workDomain +
                           "(" +
                           selectedOptions.includes(workDomain) +
@@ -712,7 +712,7 @@ function OrganizationForm({
                       <ListItemIcon>
                         <Checkbox
                           color="primary"
-                          checked={eval("isWorkDomain" + workDomain)}
+                          checked={eval("workDomainIncludes" + workDomain)}
                         />
                       </ListItemIcon>
                       <ListItemText
@@ -742,6 +742,7 @@ function OrganizationForm({
             >
               <Button
                 variant="outlined"
+                color="primary"
                 onClick={() => {
                   setOpenModal(false);
                 }}
@@ -751,6 +752,7 @@ function OrganizationForm({
 
               <Button
                 variant="contained"
+                color="primary"
                 onClick={submit}
                 disabled={
                   !nameIsValid ||
