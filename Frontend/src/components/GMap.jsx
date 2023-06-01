@@ -287,6 +287,7 @@ function GMap({
               >
                 <Button
                   variant="contained"
+                  color="primary"
                   style={{ width: 100 }}
                   startIcon={<EditIcon />}
                   onClick={() => {
@@ -299,6 +300,7 @@ function GMap({
 
                 <Button
                   variant="contained"
+                  color="primary"
                   style={{ width: 100 }}
                   startIcon={<DeleteIcon />}
                   onClick={() => {

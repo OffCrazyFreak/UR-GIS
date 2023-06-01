@@ -33,10 +33,19 @@ import { useEffect, useState } from "react";
 
 import OrganizationForm from "./components/OrganizationForm";
 import UserForm from "./components/UserForm";
+import LoginForm from "./components/LoginForm";
 import GMap from "./components/GMap";
 
 const workDomains = ["Science", "Technology", "Ecology", "Art", "Crafts"];
 const legalStatuses = ["For-profit", "Non-profit", "Individual"];
+
+const admins = [
+  { username: "Cultivamos Cultura", password: "ccultura#Possw0rd" },
+  { username: "Casa do Rio", password: "cdr#SecurePassword23" },
+  { username: "UR Institut", password: "ur#MyS3cretPoss" },
+  { username: "BioArt Society", password: "bas#Passworda2023" },
+  { username: "IamAadmin", password: "TotesC00lpa5#" },
+];
 
 export default function App() {
   const [organizations, setOrganizations] = useState([]);
@@ -50,10 +59,13 @@ export default function App() {
   const [openUserFormModal, setOpenUserFormModal] = useState(false);
   const [userFormMode, setUserFormMode] = useState("");
 
+  const [openLoginFormModal, setOpenLoginFormModal] = useState(false);
+  const [loginErrorMsg, setLoginErrorMsg] = useState("");
+
   const [activeWorkDomains, setActiveWorkDomains] = useState(workDomains);
   const [activeLegalStatuses, setActiveLegalStatuses] = useState(legalStatuses);
 
-  const [userIsLoggedIn, setUserIsLoggedIn] = useState(true);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
 
   const mqSub600 = useMediaQuery("(max-width: 600px)");
 
@@ -70,6 +82,63 @@ export default function App() {
         setOrganizations(json);
       } else {
         console.error("A server error occurred whilst fetching data.");
+      }
+    } catch (error) {
+      console.error("An error occurred whilst trying to connect to server.");
+    }
+  }
+
+  async function login(userData) {
+    const request = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    };
+
+    // TODO: (temp) remove after backend is connected
+    if (
+      admins.some(
+        (admin) =>
+          admin.username === userData.username &&
+          admin.password === userData.password
+      )
+    ) {
+      const ccLoginInfo = {
+        userData: userData,
+        lastLogin: new Date(),
+        automaticLoginDaysDuration: 7,
+      };
+      localStorage.setItem("ccLoginInfo", JSON.stringify(ccLoginInfo));
+
+      setUserIsLoggedIn(true);
+      setOpenLoginFormModal(false);
+    } else {
+      setLoginErrorMsg("Invalid username or password.");
+      console.error("Invalid username or password.");
+    }
+
+    try {
+      const serverResponse = await fetch("/api/login", request);
+
+      if (serverResponse.ok) {
+        console.log("Login successful. Welcome " + userData.username + ".");
+
+        const ccLoginInfo = {
+          userData: userData,
+          lastLogin: new Date(),
+          automaticLoginDaysDuration: 7,
+        };
+        localStorage.setItem("ccLoginInfo", JSON.stringify(ccLoginInfo));
+
+        setUserIsLoggedIn(true);
+        setOpenLoginFormModal(false);
+      } else if (serverResponse.status === 400) {
+        setLoginErrorMsg("Invalid username or password.");
+        console.error("Invalid username or password.");
+      } else {
+        console.error("An unknown error occurred whilst trying to login.");
       }
     } catch (error) {
       console.error("An error occurred whilst trying to connect to server.");
@@ -104,6 +173,20 @@ export default function App() {
   useEffect(() => {
     fetchOrganizations();
     // setOrganizations(data);
+
+    if (!userIsLoggedIn) {
+      const ccLoginInfo = JSON.parse(localStorage.getItem("ccLoginInfo"));
+
+      if (
+        ccLoginInfo !== null &&
+        (new Date() - Date.parse(Date(ccLoginInfo.lastLogin))) /
+          (1000 * 3600 * 24) <
+          ccLoginInfo.automaticLoginDaysDuration
+      ) {
+        // if userData exists in local storage and user has logged in the last X days
+        login(ccLoginInfo.userData);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -151,6 +234,13 @@ export default function App() {
         mode={userFormMode}
       />
 
+      <LoginForm
+        openModal={openLoginFormModal}
+        setOpenModal={setOpenLoginFormModal}
+        login={login}
+        loginErrorMsg={loginErrorMsg}
+      />
+
       <Box
         style={{
           marginInline: "3%",
@@ -163,7 +253,7 @@ export default function App() {
       >
         {/* TODO: Login to have access to add organization form */}
         {/* TODO: Add logos to organizations */}
-        {/* TODO: Organization form modal functionality etc. */}
+        {/* TODO: Users form modal functionality etc. */}
         {/* TODO: Import & Export organizations functionality */}
 
         {/* TODO: DEPLOY */}
@@ -291,7 +381,13 @@ export default function App() {
             color="primary"
             startIcon={!userIsLoggedIn ? <LockOpenIcon /> : <LockIcon />}
             onClick={() => {
-              setUserIsLoggedIn(!userIsLoggedIn ? true : false);
+              if (userIsLoggedIn) {
+                localStorage.removeItem("ccLoginInfo");
+                setUserIsLoggedIn(false);
+              } else {
+                setLoginErrorMsg("");
+                setOpenLoginFormModal(true);
+              }
             }}
           >
             {!userIsLoggedIn ? "Login" : "Logout"}

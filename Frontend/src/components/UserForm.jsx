@@ -238,6 +238,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
               {mode !== "delete" && (
                 <TextInput
                   labelText={"Password"}
+                  inputType={"password"}
                   isRequired
                   helperText={{
                     error:
@@ -247,7 +248,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
                   inputProps={{ minLength: 12, maxLength: 20 }}
                   validationFunction={(input) => {
                     const passwordPattern =
-                      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).{12,}$/;
+                      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{12,20}$/;
 
                     return (
                       input === "" ||
@@ -275,6 +276,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
             >
               <Button
                 variant="outlined"
+                color="primary"
                 onClick={() => {
                   setOpenModal(false);
                 }}
@@ -284,6 +286,7 @@ export default function UserForm({ openModal, setOpenModal, mode }) {
 
               <Button
                 variant="contained"
+                color="primary"
                 onClick={submit}
                 disabled={!usernameIsValid || !passwordIsValid}
               >
