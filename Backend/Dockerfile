@@ -1,11 +1,20 @@
-# Use the official Maven image as the base image
-FROM maven:3.8.5-openjdk-17-slim AS builder
+# Use the official Maven image as the base image for dependency resolution
+FROM maven:3.8.5-openjdk-17-slim AS dependencies
 
-# Copy the project's source code to the container
-COPY . /app
+# Copy the project's pom.xml to the container
+COPY pom.xml /app/pom.xml
 
 # Set the working directory
 WORKDIR /app
+
+# Resolve and download the project dependencies
+RUN mvn dependency:go-offline -B
+
+# Use a separate stage for the actual application build
+FROM dependencies AS builder
+
+# Copy the project's source code to the container
+COPY . /app
 
 # Build the project using Maven
 RUN mvn clean package -Dmaven.test.skip
@@ -24,4 +33,3 @@ EXPOSE 8080
 
 # Set the entrypoint command to run the application
 ENTRYPOINT ["java", "-jar", "restorative-practices-creative-cluster-1.0.0.jar"]
-
