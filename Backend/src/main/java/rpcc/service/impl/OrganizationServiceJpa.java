@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import rpcc.dao.OrganizationRepository;
 import rpcc.domain.Organization;
-import rpcc.service.OrganizationNotFoundException;
+import rpcc.service.NotFoundException;
 import rpcc.service.OrganizationService;
-import rpcc.service.RequestDeniedException;
 
 import java.util.List;
 
@@ -29,9 +28,14 @@ public class OrganizationServiceJpa implements OrganizationService {
     }
 
     @Override
-    public Organization updateOrganization(Long id, Organization updatedOrganization) throws OrganizationNotFoundException {
+    public List<Organization> saveAllOrganizations(List<Organization> organizations) {
+        return organizationRepo.saveAll(organizations);
+    }
+
+    @Override
+    public Organization updateOrganization(Long id, Organization updatedOrganization) throws NotFoundException {
         Organization organization = organizationRepo.findById(id)
-                .orElseThrow(() -> new OrganizationNotFoundException("Organization with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Organization with ID " + id + " not found"));
 
         // Update the organization attributes with the values from the updatedOrganization object
         organization.setName(updatedOrganization.getName());
@@ -59,7 +63,7 @@ public class OrganizationServiceJpa implements OrganizationService {
     @Override
     public void deleteOrganization(Long id) {
         if (!organizationRepo.existsById(id)) {
-            throw new OrganizationNotFoundException("Organization with id " + id + " not found.");
+            throw new NotFoundException("Organization with id " + id + " not found.");
         }
 
         organizationRepo.deleteById(id);

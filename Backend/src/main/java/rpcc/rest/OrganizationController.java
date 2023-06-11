@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rpcc.domain.Organization;
-import rpcc.service.OrganizationNotFoundException;
+import rpcc.service.NotFoundException;
 import rpcc.service.OrganizationService;
 
 import javax.validation.Valid;
@@ -32,12 +32,21 @@ public class OrganizationController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
+    @PostMapping("/import")
+    public ResponseEntity<List<Organization>> importOrganizations(@RequestBody List<Organization> organizations) {
+        List<Organization> importedOrganizations = organizationService.saveAllOrganizations(organizations);
+        if (importedOrganizations != null)
+            return ResponseEntity.status(HttpStatus.CREATED).body(importedOrganizations);
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Organization> updateOrganization(@PathVariable Long id, @Valid @RequestBody Organization updatedOrganization) {
         try {
             Organization organization = organizationService.updateOrganization(id, updatedOrganization);
             return ResponseEntity.ok(organization);
-        } catch (OrganizationNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -47,7 +56,7 @@ public class OrganizationController {
         try {
             organizationService.deleteOrganization(id);
             return ResponseEntity.ok("Organization deleted successfully");
-        } catch (OrganizationNotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Organization with ID " + id + " not found");
         }
     }
