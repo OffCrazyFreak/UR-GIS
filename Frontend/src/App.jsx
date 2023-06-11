@@ -170,6 +170,52 @@ export default function App() {
     }
   }
 
+  function handleOrganizationsFileUpload(file) {
+    const fileReader = new FileReader();
+
+    fileReader.onload = async (e) => {
+      try {
+        const organizationsData = JSON.parse(e.target.result);
+        // console.log("Organizations imported successfully:", organizationsData);
+
+        try {
+          const serverResponse = await fetch("/api/organizations/import", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(organizationsData),
+          });
+
+          if (serverResponse.ok) {
+            const json = await serverResponse.json();
+            console.log("Organizations imported:", json);
+
+            fetchOrganizations();
+          } else if (serverResponse.status === 400) {
+            console.error("Invalid organizations details.");
+          } else if (serverResponse.status === 403) {
+            console.error(
+              "Admin privileges are required for manipulating organizations."
+            );
+          } else {
+            console.error(
+              "An unknown error occurred whilst trying to add organizations."
+            );
+          }
+        } catch (error) {
+          console.error(
+            "An error occurred whilst trying to connect to server."
+          );
+        }
+      } catch (error) {
+        console.error("Error parsing JSON file: ", error);
+      }
+    };
+
+    fileReader.readAsText(file);
+  }
+
   useEffect(() => {
     fetchOrganizations();
     // setOrganizations(data);
@@ -309,12 +355,21 @@ export default function App() {
                   Add organization
                 </Button>
 
-                {/* <Button
+                <Button
                   variant="contained"
-            color="primary"
+                  color="primary"
                   startIcon={<CloudUploadIcon />}
                   onClick={() => {
-                    // TODO: connect to database to upload json or csv
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = ".json";
+
+                    fileInput.onchange = (e) => {
+                      const file = e.target.files[0];
+                      handleOrganizationsFileUpload(file);
+                    };
+
+                    fileInput.click();
                   }}
                 >
                   Import organizations
@@ -322,14 +377,31 @@ export default function App() {
 
                 <Button
                   variant="contained"
-            color="primary"
+                  color="primary"
                   startIcon={<CloudDownloadIcon />}
-                  onClick={() => {
-                    // TODO: connect to database to download json and csv
+                  onClick={async () => {
+                    await fetchOrganizations();
+
+                    const organizationsData = organizations.map(
+                      ({ id, ...org }) => org
+                    ); // remove ID
+                    const organizationsJSON = JSON.stringify(organizationsData);
+
+                    // Generate and download JSON file
+                    const jsonBlob = new Blob([organizationsJSON], {
+                      type: "application/json",
+                    });
+                    const jsonUrl = URL.createObjectURL(jsonBlob);
+                    const jsonLink = document.createElement("a");
+                    jsonLink.href = jsonUrl;
+                    jsonLink.download = `rp_cc-organizations_export-${new Date()
+                      .toISOString()
+                      .slice(0, 10)}.json`;
+                    jsonLink.click();
                   }}
                 >
                   Export organizations
-                </Button> */}
+                </Button>
               </ButtonGroup>
 
               <ButtonGroup

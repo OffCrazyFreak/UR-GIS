@@ -159,7 +159,7 @@ function OrganizationForm({
         fetchOrganizations();
         setOpenModal(false);
       } else if (serverResponse.status === 400) {
-        console.error("Invalid company details.");
+        console.error("Invalid organization details.");
       } else if (serverResponse.status === 403) {
         console.error(
           "Admin privileges are required for manipulating organizations."
