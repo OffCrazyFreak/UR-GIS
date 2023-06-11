@@ -54,7 +54,6 @@ Frontend/.env.development.local
 Frontend/.env.test.local
 Frontend/.env.production.local
 Frontend/.vscode/
-Frontend/package-lock.json
 
 Frontend/npm-debug.log*
 Frontend/yarn-debug.log*

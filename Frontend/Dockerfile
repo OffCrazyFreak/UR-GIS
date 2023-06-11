@@ -1,14 +1,23 @@
-# Use the official Node.js image as the base image
-FROM node:14.17.0-alpine AS builder
+# Use the official Node.js image as the base image for dependency resolution
+FROM node:14.17.0-alpine AS dependencies
 
-# Copy the project's source code to the container
-COPY . /app
+# Copy the project's package.json and package-lock.json to the container
+COPY package.json package-lock.json /app/
 
 # Set the working directory
 WORKDIR /app
 
-# Install dependencies and build the React app
-RUN npm install && npm run build
+# Install dependencies
+RUN npm ci
+
+# Use a separate stage for the actual application build
+FROM dependencies AS builder
+
+# Copy the project's source code to the container
+COPY . /app
+
+# Build the React app
+RUN npm run build
 
 # Use a lightweight Nginx image as the base image for reverse proxy
 FROM nginx:1.21.1-alpine
@@ -27,4 +36,3 @@ EXPOSE 80
 
 # Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
-
