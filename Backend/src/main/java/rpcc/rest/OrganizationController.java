@@ -29,7 +29,7 @@ public class OrganizationController {
         if (addedOrganization != null)
             return ResponseEntity.status(HttpStatus.CREATED).body(addedOrganization);
         else
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PostMapping("/import")
