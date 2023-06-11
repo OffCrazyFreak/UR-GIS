@@ -363,7 +363,6 @@ export default function App() {
                     const fileInput = document.createElement("input");
                     fileInput.type = "file";
                     fileInput.accept = ".json";
-
                     fileInput.onchange = (e) => {
                       const file = e.target.files[0];
                       handleOrganizationsFileUpload(file);

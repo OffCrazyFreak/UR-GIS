@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image for dependency resolution
-FROM node:14.17.0-alpine AS dependencies
+FROM node:20.3.0-alpine AS dependencies
 
 # Copy the project's package.json and package-lock.json to the container
 COPY package.json package-lock.json /app/
@@ -20,7 +20,7 @@ COPY . /app
 RUN npm run build
 
 # Use a lightweight Nginx image as the base image for reverse proxy
-FROM nginx:1.21.1-alpine
+FROM nginx:1.25.0-alpine
 
 # Remove the default Nginx configuration
 RUN rm /etc/nginx/conf.d/default.conf
