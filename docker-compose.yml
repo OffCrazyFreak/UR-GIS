@@ -11,10 +11,11 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-
-  spring-app:
+  backend:
     build:
       context: Backend
+    depends_on:
+      - postgres
     restart: always
     ports:
       - 8080:8080
@@ -25,13 +26,37 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: bazepodataka
 
-  react-app:
+  frontend:
     build:
       context: Frontend
+    depends_on:
+      - backend
     restart: always
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/letsencrypt/:ro
 
+  ssl-service:
+    image: certbot/certbot:v2.6.0
+    depends_on:
+      - frontend
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    command:
+      - certonly
+      - --webroot
+      - -w
+      - /var/www/certbot/
+      - --email=gjino@ur-institute.org
+      - --agree-tos
+      - --no-eff-email
+      - -d
+      - restorativepractices.xyz
 
 volumes:
   postgres-data:
+
