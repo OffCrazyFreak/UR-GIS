@@ -262,8 +262,6 @@ function OrganizationForm({
       workDomainIncludesCrafts,
     } = organization || {};
 
-    console.log(organization);
-
     setFormData({
       entity: {
         name: name ?? null,
