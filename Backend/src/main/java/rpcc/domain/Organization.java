@@ -50,13 +50,17 @@ public class Organization {
     @Column(length = 120)
     private String webUrl;
 
+    @Size(max = 120, message = "Instagram URL must be less than or equal to 120 characters")
+    @Column(length = 120)
+    private String instagramUrl;
+
     @Size(max = 120, message = "Facebook URL must be less than or equal to 120 characters")
     @Column(length = 120)
     private String facebookUrl;
 
-    @Size(max = 120, message = "Instagram URL must be less than or equal to 120 characters")
+    @Size(max = 120, message = "Twitter URL must be less than or equal to 120 characters")
     @Column(length = 120)
-    private String instagramUrl;
+    private String twitterUrl;
 
     @Size(max = 120, message = "LinkedIn URL must be less than or equal to 120 characters")
     @Column(length = 120)
@@ -167,6 +171,14 @@ public class Organization {
         this.webUrl = webUrl;
     }
 
+    public String getInstagramUrl() {
+        return instagramUrl;
+    }
+
+    public void setInstagramUrl(String instagramUrl) {
+        this.instagramUrl = instagramUrl;
+    }
+
     public String getFacebookUrl() {
         return facebookUrl;
     }
@@ -175,12 +187,12 @@ public class Organization {
         this.facebookUrl = facebookUrl;
     }
 
-    public String getInstagramUrl() {
-        return instagramUrl;
+    public String getTwitterUrl() {
+        return twitterUrl;
     }
 
-    public void setInstagramUrl(String instagramUrl) {
-        this.instagramUrl = instagramUrl;
+    public void setTwitterUrl(String twitterUrl) {
+        this.twitterUrl = twitterUrl;
     }
 
     public String getLinkedInUrl() {

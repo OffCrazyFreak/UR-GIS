@@ -47,8 +47,9 @@ public class OrganizationServiceJpa implements OrganizationService {
         organization.setLookingFor(updatedOrganization.getLookingFor());
         organization.setAddress(updatedOrganization.getAddress());
         organization.setWebUrl(updatedOrganization.getWebUrl());
-        organization.setFacebookUrl(updatedOrganization.getFacebookUrl());
         organization.setInstagramUrl(updatedOrganization.getInstagramUrl());
+        organization.setFacebookUrl(updatedOrganization.getFacebookUrl());
+        organization.setTwitterUrl(updatedOrganization.getTwitterUrl());
         organization.setLinkedInUrl(updatedOrganization.getLinkedInUrl());
         organization.setLegalStatus(updatedOrganization.getLegalStatus());
         organization.setWorkDomainIncludesScience(updatedOrganization.getWorkDomainIncludesScience());

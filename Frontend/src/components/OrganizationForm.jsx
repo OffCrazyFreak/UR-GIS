@@ -50,8 +50,9 @@ function OrganizationForm({
   const [foundAddress, setFoundAddress] = useState();
 
   const [webUrl, setWebUrl] = useState();
-  const [facebookUrl, setFacebookUrl] = useState();
   const [instagramUrl, setInstagramUrl] = useState();
+  const [facebookUrl, setFacebookUrl] = useState();
+  const [twitterUrl, setTwitterUrl] = useState();
   const [linkedInUrl, setLinkedInUrl] = useState();
 
   const [legalStatus, setLegalStatus] = useState();
@@ -77,8 +78,9 @@ function OrganizationForm({
   const [addressIsValid, setAddressIsValid] = useState(false);
 
   const [webUrlIsValid, setWebUrlIsValid] = useState(true);
-  const [facebookUrlIsValid, setFacebookUrlIsValid] = useState(true);
   const [instagramUrlIsValid, setInstagramUrlIsValid] = useState(true);
+  const [facebookUrlIsValid, setFacebookUrlIsValid] = useState(true);
+  const [twitterUrlIsValid, setTwitterUrlIsValid] = useState(true);
   const [linkedInUrlIsValid, setLinkedInUrlIsValid] = useState(true);
 
   const [legalStatusIsValid, setLegalStatusIsValid] = useState(true);
@@ -120,8 +122,9 @@ function OrganizationForm({
       address: foundAddress,
 
       webUrl: webUrl?.trim(),
-      facebookUrl: facebookUrl?.trim(),
       instagramUrl: instagramUrl?.trim(),
+      facebookUrl: facebookUrl?.trim(),
+      twitterUrl: twitterUrl?.trim(),
       linkedInUrl: linkedInUrl?.trim(),
 
       legalStatus: legalStatus,
@@ -219,8 +222,9 @@ function OrganizationForm({
     setAddress(organization?.address ?? "");
 
     setWebUrl(organization?.webUrl);
-    setFacebookUrl(organization?.facebookUrl);
     setInstagramUrl(organization?.instagramUrl);
+    setFacebookUrl(organization?.facebookUrl);
+    setTwitterUrl(organization?.twitterUrl);
     setLinkedInUrl(organization?.linkedInUrl);
 
     setLegalStatus(organization?.legalStatus || legalStatuses[0]);
@@ -251,8 +255,9 @@ function OrganizationForm({
     setAddressIsValid(organization ? true : false);
 
     setWebUrlIsValid(true);
-    setFacebookUrlIsValid(true);
     setInstagramUrlIsValid(true);
+    setFacebookUrlIsValid(true);
+    setTwitterUrlIsValid(true);
     setLinkedInUrlIsValid(true);
 
     setLegalStatusIsValid(true);
@@ -642,6 +647,35 @@ function OrganizationForm({
                   setValueIsValid={setWebUrlIsValid}
                 ></TextInput>
                 <TextInput
+                  labelText={"Instagram URL"}
+                  helperText={{
+                    error: "Invalid instagram URL",
+                    details: "",
+                  }}
+                  placeholderText={"https://www.instagram.com/"}
+                  inputProps={{ maxLength: 120 }}
+                  validationFunction={(input) => {
+                    const urlPattern = new RegExp(
+                      "^(https?:\\/\\/)?" + // validate protocol
+                        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
+                        "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
+                        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
+                        "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
+                        "(\\#[-a-z\\d_]*)?$",
+                      "i"
+                    ); // validate fragment locator
+
+                    return (
+                      input === "" ||
+                      (input.length <= 120 && urlPattern.test(input))
+                    );
+                  }}
+                  value={instagramUrl}
+                  setValue={setInstagramUrl}
+                  valueIsValid={setInstagramUrl}
+                  setValueIsValid={setInstagramUrlIsValid}
+                ></TextInput>
+                <TextInput
                   labelText={"Facebook URL"}
                   helperText={{
                     error: "Invalid facebook URL",
@@ -671,12 +705,12 @@ function OrganizationForm({
                   setValueIsValid={setFacebookUrlIsValid}
                 ></TextInput>
                 <TextInput
-                  labelText={"Instagram URL"}
+                  labelText={"Twitter URL"}
                   helperText={{
-                    error: "Invalid instagram URL",
+                    error: "Invalid twitter URL",
                     details: "",
                   }}
-                  placeholderText={"https://www.instagram.com/"}
+                  placeholderText={"https://www.twitter.com/"}
                   inputProps={{ maxLength: 120 }}
                   validationFunction={(input) => {
                     const urlPattern = new RegExp(
@@ -694,10 +728,10 @@ function OrganizationForm({
                       (input.length <= 120 && urlPattern.test(input))
                     );
                   }}
-                  value={instagramUrl}
-                  setValue={setInstagramUrl}
-                  valueIsValid={setInstagramUrl}
-                  setValueIsValid={setInstagramUrlIsValid}
+                  value={twitterUrl}
+                  setValue={setTwitterUrl}
+                  valueIsValid={twitterUrlIsValid}
+                  setValueIsValid={setTwitterUrlIsValid}
                 ></TextInput>
                 <TextInput
                   labelText={"LinkedIn URL"}
@@ -764,8 +798,9 @@ function OrganizationForm({
                   !lookingForIsValid ||
                   !addressIsValid ||
                   !webUrlIsValid ||
-                  !facebookUrlIsValid ||
                   !instagramUrlIsValid ||
+                  !facebookUrlIsValid ||
+                  !twitterUrlIsValid ||
                   !linkedInUrlIsValid ||
                   !legalStatusIsValid ||
                   !workDomainIsValid
