@@ -2,7 +2,7 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15.5-alpine3.18
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -47,15 +47,16 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
     command:
-      - certonly
-      - --webroot
-      - -w
-      - /var/www/certbot/
-      - --email=gjino@ur-institute.org
-      - --agree-tos
-      - --no-eff-email
-      - -d
-      - restorativepractices.xyz
+#      - certonly
+#      - --webroot
+#      - -w
+#      - /var/www/certbot/
+#      - --email=gjino@ur-institute.org
+#      - --agree-tos
+#      - --no-eff-email
+#      - -d
+#      - restorativepractices.xyz
+      - renew
 
 volumes:
   postgres-data:
