@@ -222,6 +222,23 @@ function GMap({
                   />
                 </ListItem>
               )}
+              {selectedMarker.orgInfo.instagramUrl && (
+                <ListItem>
+                  <ListItemText
+                    primary="Instagram"
+                    secondary={
+                      <Link
+                        target="_blank"
+                        underline="none"
+                        color="primary"
+                        href={selectedMarker.orgInfo.instagramUrl}
+                      >
+                        {selectedMarker.orgInfo.instagramUrl}
+                      </Link>
+                    }
+                  />
+                </ListItem>
+              )}
               {selectedMarker.orgInfo.facebookUrl && (
                 <ListItem>
                   <ListItemText
@@ -239,18 +256,18 @@ function GMap({
                   />
                 </ListItem>
               )}
-              {selectedMarker.orgInfo.instagramUrl && (
+              {selectedMarker.orgInfo.twitterUrl && (
                 <ListItem>
                   <ListItemText
-                    primary="Instagram"
+                    primary="Twitter"
                     secondary={
                       <Link
                         target="_blank"
                         underline="none"
                         color="primary"
-                        href={selectedMarker.orgInfo.instagramUrl}
+                        href={selectedMarker.orgInfo.twitterUrl}
                       >
-                        {selectedMarker.orgInfo.instagramUrl}
+                        {selectedMarker.orgInfo.twitterUrl}
                       </Link>
                     }
                   />
