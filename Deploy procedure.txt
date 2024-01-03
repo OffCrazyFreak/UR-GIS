@@ -1,0 +1,13 @@
+Deploy procedure:
+
+- git clone repo
+- change nginx config for app (server_name and root folder app_name)
+- change APP_FOLDER_NAME in deploy-app_name to match nginx config
+- move nginx config for app to /etc/nginx/sites-available
+    - sudo mv nginx-app_name /etc/nginx/sites-available/
+- link nginx config file to /etc/nginx/sites-enabled
+    - sudo ln -s /etc/nginx/sites-available/nginx-app_name.conf /etc/nginx/sites-enabled/
+- run deploy-app_name.sh
+    - ./deploy-app_name.sh
+- reload/restart nginx
+    - sudo systemctl reload/restart nginx
