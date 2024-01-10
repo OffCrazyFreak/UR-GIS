@@ -7,27 +7,36 @@ APP_FOLDER_NAME="Restorative-Practices-Creative-Cluster"
 NGINX_HTML_DIR="/usr/share/nginx/html/$APP_FOLDER_NAME"
 DOCKER_COMPOSE_FILE="./docker-compose.yml"
 
-# Function to check if there are changes in a given directory
-check_for_changes() {
-    local app_dir=$1
-    cd $app_dir
-    # Check for changes in the directory
-    if git diff --quiet HEAD --; then
-        echo "No changes in the $app_dir directory."
-        cd - > /dev/null
-        return 1
-    else
-        echo "Changes detected in the $app_dir directory."
-        cd - > /dev/null
-        return 0
-    fi
+# Function to pull latest changes and check which directories have changed
+pull_and_check_changes() {
+    # Pull the latest changes from the remote repository
+    git pull
+
+    # Check for changes in specific directories after pulling
+    local changed_files=$(git diff --name-only HEAD@{1} HEAD)
+
+    local react_changes=0
+    local backend_changes=0
+
+    for file in $changed_files; do
+        if [[ $file == $REACT_APP_DIR* ]]; then
+            react_changes=1
+        elif [[ $file == $BACKEND_APP_DIR* ]]; then
+            backend_changes=1
+        fi
+    done
+
+    return $((react_changes + 2 * backend_changes))
 }
 
 # Navigate to script's directory (root of the repository)
 cd "$(dirname "$0")"
 
-# Check for changes in the backend app directory
-if check_for_changes $BACKEND_APP_DIR; then
+# Pull the latest changes and check which parts have changed
+change_result=$(pull_and_check_changes)
+
+# Deploy Backend if there were changes
+if [[ $change_result -eq 2 ]] || [[ $change_result -eq 3 ]]; then
     # Step 1: Stop and remove existing containers
     echo "Stopping and removing existing containers..."
     docker-compose -f $DOCKER_COMPOSE_FILE down
@@ -49,12 +58,21 @@ if check_for_changes $BACKEND_APP_DIR; then
     fi
 fi
 
-# Check for changes in the React app directory
-if check_for_changes $REACT_APP_DIR; then
-    # Step 3: Build React application on host
+# Deploy Frontend if there were changes
+if [[ $change_result -eq 1 ]] || [[ $change_result -eq 3 ]]; then
+    # Step 3: Build React application on host    
     echo "Building React application..."
     cd $REACT_APP_DIR
-    npm ci
+    
+    # Check if node_modules directory exists
+    if [ -d "node_modules" ]; then
+        # If node_modules exists, use npm ci for a clean install
+        npm ci
+    else
+        # If node_modules does not exist, run npm install
+        npm install
+    fi
+
     npm run build
 
     # Check if React build was successful
