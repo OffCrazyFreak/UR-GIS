@@ -29,7 +29,7 @@ import {
 
 import { useEffect, useState } from "react";
 
-// import data from "./data/organizations.json";
+// import data from "./data/organizations.json"; 
 
 import OrganizationForm from "./components/OrganizationForm";
 import UserForm from "./components/UserForm";
