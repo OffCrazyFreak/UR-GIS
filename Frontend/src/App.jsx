@@ -305,7 +305,7 @@ export default function App() {
         {/* TODO: DEPLOY */}
 
         <Typography variant="h2" align="center">
-          Restorative Practices Creative Clusteraaaaaaaa
+          Restorative Practices Creative Cluster
         </Typography>
 
         <Box
