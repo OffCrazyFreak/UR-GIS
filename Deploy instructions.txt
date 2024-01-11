@@ -9,12 +9,15 @@ For inital deploy:
     POSTGRES_USER=postgres
     POSTGRES_PASSWORD=yourPassword
     POSTGRES_DB=yourDatabaseName
-- run setup-and-deploy.sh
-    - ./setup-and-deploy.sh
+- run setup-and-deploy.sh as sudo
+    - sudo ./setup-and-deploy.sh
 - setup SSL for the new app/domain
  - certbot --nginx
 
 For redeploys:
-- run redeploy.sh
-    - ./redeploy.sh
+- run redeploy.sh as sudo
+    - sudo ./redeploy.sh
 
+For removing app and configuration (USE WITH CAUTION, IT DELETES EVERYTHING):
+- run cleanup.sh as sudo
+    - sudo ./cleanup.sh
