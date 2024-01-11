@@ -21,55 +21,41 @@ NGINX_CONF_FILENAME=$(basename "$NGINX_CONF_FILE")
 APP_FOLDER_NAME=$(echo $NGINX_CONF_FILENAME | sed -e 's/^nginx-//' -e 's/\.conf$//')
 NGINX_HTML_DIR="/usr/share/nginx/html/$APP_FOLDER_NAME"
 
-# Function to pull latest changes and check which directories have changed
-pull_and_check_changes() {
-    # Fetch the latest commit hash before pulling
-    local commit_before_pull=$(git rev-parse HEAD)
 
-    # Pull the latest changes from the remote repository
-    git pull
+# Fetch the latest commit hash before pulling
+commit_before_pull=$(git rev-parse HEAD)
 
-    # Fetch the latest commit hash after pulling
-    local commit_after_pull=$(git rev-parse HEAD)
+# Pull the latest changes from the remote repository
+git pull
 
-    # Compare commit hashes
-    if [[ $commit_before_pull != $commit_after_pull ]]; then
-        # Check for changes in specific directories after pulling
-        local changed_files=$(git diff --name-only $commit_before_pull $commit_after_pull)
+# Fetch the latest commit hash after pulling
+commit_after_pull=$(git rev-parse HEAD)
 
-        local react_changes=0
-        local backend_changes=0
+# Initialize flags
+react_changes=0
+backend_changes=0
 
-        for file in $changed_files; do
-            if [[ $file == $REACT_APP_DIR* ]]; then
-                react_changes=1
-            elif [[ $file == $BACKEND_APP_DIR* ]]; then
-                backend_changes=1
-            fi
-        done
+# Check for changes in specific directories after pulling
+if [[ $commit_before_pull != $commit_after_pull ]]; then
+    changed_files=$(git diff --name-only $commit_before_pull $commit_after_pull)
 
-        # Construct a return value based on detected changes
-        if [[ $react_changes -eq 1 ]] && [[ $backend_changes -eq 1 ]]; then
-            return 3
-        elif [[ $react_changes -eq 1 ]]; then
-            return 1
-        elif [[ $backend_changes -eq 1 ]]; then
-            return 2
-        else
-            return 0
+    for file in $changed_files; do
+        echo "Changed file: $file"
+        # Normalize paths
+        full_path="./$file"
+
+        if [[ $full_path == $REACT_APP_DIR/* ]]; then
+            react_changes=1
+            echo "Changes detected in frontend directory..."
+        elif [[ $full_path == $BACKEND_APP_DIR/* ]]; then
+            backend_changes=1
+            echo "Changes detected in backend directory..."
         fi
-    fi
-
-    return 0
-}
-
-
-# Pull the latest changes and check which parts have changed
-pull_and_check_changes
-change_result=$?
+    done
+fi
 
 # Deploy Backend if there were changes
-if [[ $change_result -eq 2 ]] || [[ $change_result -eq 3 ]]; then
+if [[ $backend_changes -eq 1 ]]; then
     # Step 1: Stop and remove existing containers
     echo "Stopping and removing existing containers..."
     docker-compose -f $DOCKER_COMPOSE_FILE down
@@ -91,8 +77,8 @@ if [[ $change_result -eq 2 ]] || [[ $change_result -eq 3 ]]; then
     fi
 fi
 
-# Deploy Frontend if there were changes
-if [[ $change_result -eq 1 ]] || [[ $change_result -eq 3 ]]; then
+# Redeploy Frontend if there were changes
+if [[ $react_changes -eq 1 ]]; then
     # Step 3: Build React application on host    
     echo "Building React application..."
     cd $REACT_APP_DIR
