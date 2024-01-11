@@ -1,23 +1,16 @@
-Deploy procedure:
+Server setup:
+- install Nginx, Node.js, npm, Docker, and Docker Compose on server (if there are errors, check if they actually are the latest versions)
 
-Once:
-- git clone repo
-- change nginx config for app (server_name and root folder app_name)
-- change APP_FOLDER_NAME in deploy-app_name to match nginx config
+For inital deploy:
+- git clone repo in home directory
+- cd into the cloned repo
+- in nginx-appname.conf file comment (#) the localhost line and uncomment the line with your domain
+- run setup-and-deploy.sh
+    - ./setup-and-deploy.sh
+- setup SSL for the new app/domain
+ - certbot --nginx
 
-If changed:
-- copy nginx config for app to /etc/nginx/sites-available
-    - sudo cp ./nginx-app_name.conf /etc/nginx/sites-available/
-
-Once:
-- link nginx config file to /etc/nginx/sites-enabled
-    - sudo ln -s /etc/nginx/sites-available/nginx-app_name.conf /etc/nginx/sites-enabled/
-- delete default nginx index file
-    - sudo rm /usr/share/nginx/html/index.html
-
-If changed:
-- run deploy-app_name.sh
-    - ./deploy-app_name.sh
-- reload/restart nginx
-    - sudo systemctl reload/restart nginx
+For redeploys:
+- run redeploy.sh
+    - ./redeploy.sh
 
