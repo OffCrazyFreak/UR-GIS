@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RestorativePracticesCreativeClusterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(RestorativePracticesCreativeClusterApplication.class, args);
+		SpringApplication.run(RestorativePracticesCreativeClusterApplication.class, args); 
 	}
 
 }
