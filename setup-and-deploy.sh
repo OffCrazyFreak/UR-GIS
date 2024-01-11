@@ -50,8 +50,8 @@ cd - > /dev/null
 
 # Create the app directory in Nginx's html folder and copy build files
 echo "Deploying the app to Nginx..."
-sudo mkdir -p $NGINX_APP_DIR
-sudo cp -r $REACT_APP_DIR/build/* $NGINX_APP_DIR/
+sudo mkdir -p $NGINX_HTML_DIR
+sudo cp -r $REACT_APP_DIR/build/* $NGINX_HTML_DIR/
 
 # Run Docker Compose for PostgreSQL and Backend
 echo "Starting Docker services..."
