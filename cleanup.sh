@@ -26,6 +26,9 @@ remove_nginx_config() {
     echo "Removing Nginx configuration file..."
     sudo rm -f /etc/nginx/sites-available/$NGINX_CONF_FILENAME
     sudo rm -f /etc/nginx/sites-enabled/$NGINX_CONF_FILENAME
+
+    echo "Reloading Nginx..."
+    sudo systemctl reload nginx
 }
 
 # Function to remove the app folder in Nginx html directory
