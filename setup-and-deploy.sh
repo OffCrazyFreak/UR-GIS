@@ -55,7 +55,7 @@ sudo cp -r $REACT_APP_DIR/build/* $NGINX_HTML_DIR/
 
 # Run Docker Compose for PostgreSQL and Backend
 echo "Starting Docker services..."
-docker-compose -f $DOCKER_COMPOSE_FILE up -d
+docker-compose -f $DOCKER_COMPOSE_FILE up -d --build
 
 echo "Initial deployment completed successfully!"
 
