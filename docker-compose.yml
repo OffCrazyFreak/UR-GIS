@@ -9,7 +9,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - risdnz-postgres-data:/var/lib/postgresql/data
+      - risdnz-postgres-data:/var/lib/postg
+    networks:
+      - risdnz-networkresql/data
+      
 
   risdnz-backend:
     build:
@@ -23,6 +26,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://risdnz-postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - risdnz-network
 
 volumes:
   risdnz-postgres-data:
+
+networks:
+  risdnz-network:
+    driver: bridge
