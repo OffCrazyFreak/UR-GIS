@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - rpcc-postgres-data:/var/lib/postgresql/data
+    networks:
+      - rpcc-network
 
   rpcc-backend:
     build:
@@ -23,6 +25,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://rpcc-postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - rpcc-network
 
 volumes:
   rpcc-postgres-data:
+
+networks:
+  rpcc-network:
+    driver: bridge
