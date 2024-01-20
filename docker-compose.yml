@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - rpcc-postgres-data:/var/lib/postgresql/data
 
   rpcc-backend:
     build:
@@ -25,4 +25,4 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
-  postgres-data:
+  rpcc-postgres-data:
