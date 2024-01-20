@@ -9,9 +9,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - risdnz-postgres-data:/var/lib/postg
+      - risdnz-postgres-data:/var/lib/postgresql/data
     networks:
-      - risdnz-networkresql/data
+      - risdnz-network
       
 
   risdnz-backend:
