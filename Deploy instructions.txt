@@ -5,10 +5,7 @@ For inital deploy:
 - git clone repo in home directory
 - cd into the cloned repo
 - in nginx-appname.conf file comment (#) the localhost line and uncomment the line with your domain
-- create a .env file with the database variables, example
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=yourPassword
-    POSTGRES_DB=yourDatabaseName
+- copy and change database connection variables from .env.example to a new .env file
 - run setup-and-deploy.sh as sudo
     - sudo ./setup-and-deploy.sh
 - setup SSL for the new app/domain
